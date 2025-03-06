@@ -19,6 +19,7 @@ services:
             dockerfile: docker/artemis/Dockerfile
             pull: true
             target: runtime
+        restart: on-failure
         volumes:
             - artemis-data:/opt/artemis/data
             - artemis-config:/opt/artemis/config
@@ -47,7 +48,7 @@ services:
     mysql:
         container_name: artemis-mysql
         image: docker.io/library/mysql:8.0.32
-        pull_policy: always
+        restart: on-failure
         volumes:
             - artemis-mysql-data:/var/lib/mysql
         environment:
@@ -106,6 +107,7 @@ services:
             context: ./jenkins
             dockerfile: Dockerfile.its
         user: root
+        restart: on-failure
         volumes:
             - artemis-jenkins-data:/var/jenkins_home
             - ./jenkins/jenkins-disable-csrf.groovy:/var/jenkins_home/init.groovy # Disable CSRF token
