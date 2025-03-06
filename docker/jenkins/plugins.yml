@@ -4,6 +4,7 @@ plugins:
   - artifactId: docker-workflow
   - artifactId: pipeline-maven
   - artifactId: timestamper
+  - artifactId: credentials
   - artifactId: configuration-as-code
   - artifactId: ws-cleanup
   - artifactId: test-notifications
