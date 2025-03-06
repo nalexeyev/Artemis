@@ -17,7 +17,7 @@ export class TutorialGroupFreePeriodDTO {
 export class TutorialGroupFreePeriodService {
     private httpClient = inject(HttpClient);
 
-    private resourceURL = 'api/tutorialgroup';
+    private resourceURL = 'api';
 
     getOneOfConfiguration(courseId: number, tutorialGroupsConfigurationId: number, tutorialGroupFreePeriodId: number): Observable<EntityResponseType> {
         return this.httpClient

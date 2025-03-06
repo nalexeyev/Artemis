@@ -12,7 +12,7 @@ import { CompetencyJol } from 'app/entities/competency.model';
 export class CourseDashboardService {
     private http = inject(HttpClient);
 
-    public resourceUrl = 'api/atlas/metrics';
+    public resourceUrl = 'api/metrics';
 
     getCourseMetricsForUser(courseId: number): Observable<HttpResponse<StudentMetrics>> {
         return this.http.get<StudentMetrics>(`${this.resourceUrl}/course/${courseId}/student`, { observe: 'response' }).pipe(

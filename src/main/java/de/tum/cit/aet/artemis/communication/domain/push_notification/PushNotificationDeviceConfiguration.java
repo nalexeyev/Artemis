@@ -45,9 +45,6 @@ public class PushNotificationDeviceConfiguration {
     @Column(name = "secret_key")
     private byte[] secretKey;
 
-    @Column(name = "version_code")
-    private String versionCode;
-
     @Id
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -62,14 +59,13 @@ public class PushNotificationDeviceConfiguration {
     }
 
     public PushNotificationDeviceConfiguration(String token, PushNotificationDeviceType deviceType, Date expirationDate, byte[] secretKey, User owner,
-            PushNotificationApiType apiType, String versionCode) {
+            PushNotificationApiType apiType) {
         this.token = token;
         this.deviceType = deviceType;
         this.expirationDate = expirationDate;
         this.secretKey = secretKey;
         this.owner = owner;
         this.apiType = apiType;
-        this.versionCode = versionCode;
     }
 
     public PushNotificationDeviceConfiguration() {
@@ -118,10 +114,6 @@ public class PushNotificationDeviceConfiguration {
 
     public PushNotificationApiType getApiType() {
         return apiType;
-    }
-
-    public String getVersionCode() {
-        return versionCode;
     }
 
     @Override

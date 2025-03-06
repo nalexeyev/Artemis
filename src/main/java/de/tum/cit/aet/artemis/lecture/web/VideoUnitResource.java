@@ -33,7 +33,7 @@ import de.tum.cit.aet.artemis.lecture.service.LectureUnitService;
 
 @Profile(PROFILE_CORE)
 @RestController
-@RequestMapping("api/lecture/")
+@RequestMapping("api/")
 public class VideoUnitResource {
 
     private static final Logger log = LoggerFactory.getLogger(VideoUnitResource.class);

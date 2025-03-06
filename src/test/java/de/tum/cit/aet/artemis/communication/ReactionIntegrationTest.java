@@ -115,12 +115,11 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         courseRepository.save(course);
 
         if (!shouldBeAllowed) {
-            request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class, HttpStatus.BAD_REQUEST);
+            request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class, HttpStatus.BAD_REQUEST);
             return;
         }
 
-        Reaction createdReaction = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class,
-                HttpStatus.CREATED);
+        Reaction createdReaction = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class, HttpStatus.CREATED);
         checkCreatedReaction(reactionToSaveOnPost, createdReaction);
         assertThat(postReactedOn.getReactions()).hasSize(reactionRepository.findReactionsByPostId(postReactedOn.getId()).size() - 1);
     }
@@ -132,8 +131,7 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         Post postReactedOn = existingPostsWithAnswers.getFirst();
         Reaction reactionToSaveOnPost = createVoteReactionOnPost(postReactedOn, null);
 
-        Reaction createdReaction = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class,
-                HttpStatus.CREATED);
+        Reaction createdReaction = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class, HttpStatus.CREATED);
         checkCreatedReaction(reactionToSaveOnPost, createdReaction);
         assertThat(postReactedOn.getReactions()).hasSize(reactionRepository.findReactionsByPostId(postReactedOn.getId()).size() - 1);
         // should increase post's vote count
@@ -153,12 +151,11 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         courseRepository.save(course);
 
         if (!shouldBeAllowed) {
-            request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnMessage, Reaction.class, HttpStatus.BAD_REQUEST);
+            request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnMessage, Reaction.class, HttpStatus.BAD_REQUEST);
             return;
         }
 
-        Reaction createdReaction = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnMessage, Reaction.class,
-                HttpStatus.CREATED);
+        Reaction createdReaction = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnMessage, Reaction.class, HttpStatus.CREATED);
         checkCreatedReaction(reactionToSaveOnMessage, createdReaction);
         assertThat(messageReactedOn.getReactions()).hasSize(reactionRepository.findReactionsByPostId(messageReactedOn.getId()).size() - 1);
     }
@@ -170,7 +167,7 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         Post messageReactedOn = existingConversationPosts.get(2);
         Reaction reactionToSaveOnMessage = createReactionOnPost(messageReactedOn);
 
-        Reaction notCreatedReaction = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnMessage, Reaction.class,
+        Reaction notCreatedReaction = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnMessage, Reaction.class,
                 HttpStatus.FORBIDDEN);
         assertThat(notCreatedReaction).isNull();
         assertThat(messageReactedOn.getReactions()).hasSize(reactionRepository.findReactionsByPostId(messageReactedOn.getId()).size());
@@ -183,13 +180,12 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         Post postReactedOn = existingPostsWithAnswers.getFirst();
         Reaction reactionToSaveOnPost = createReactionOnPost(postReactedOn);
 
-        Reaction createdReaction = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class,
-                HttpStatus.CREATED);
+        Reaction createdReaction = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class, HttpStatus.CREATED);
         checkCreatedReaction(reactionToSaveOnPost, createdReaction);
         assertThat(postReactedOn.getReactions()).hasSize(reactionRepository.findReactionsByPostId(postReactedOn.getId()).size() - 1);
 
         // try again: the post "silently" fails with a 200
-        var response = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class, HttpStatus.OK);
+        var response = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class, HttpStatus.OK);
         assertThat(response).isNull();
     }
 
@@ -205,12 +201,11 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         courseRepository.save(course);
 
         if (!shouldBeAllowed) {
-            request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class, HttpStatus.BAD_REQUEST);
+            request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class, HttpStatus.BAD_REQUEST);
             return;
         }
 
-        Reaction createdReaction = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class,
-                HttpStatus.CREATED);
+        Reaction createdReaction = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class, HttpStatus.CREATED);
         checkCreatedReaction(reactionToSaveOnAnswerPost, createdReaction);
         assertThat(answerPostReactedOn.getReactions()).hasSize(reactionRepository.findReactionsByAnswerPostId(answerPostReactedOn.getId()).size() - 1);
     }
@@ -222,13 +217,12 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         AnswerPost answerPostReactedOn = existingAnswerPosts.getFirst();
         Reaction reactionToSaveOnAnswerPost = createReactionOnAnswerPost(answerPostReactedOn);
 
-        Reaction createdReaction = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class,
-                HttpStatus.CREATED);
+        Reaction createdReaction = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class, HttpStatus.CREATED);
         checkCreatedReaction(reactionToSaveOnAnswerPost, createdReaction);
         assertThat(answerPostReactedOn.getReactions()).hasSize(reactionRepository.findReactionsByAnswerPostId(answerPostReactedOn.getId()).size() - 1);
 
         // try again: the post "silently" fails with a 200
-        var response = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class, HttpStatus.OK);
+        var response = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class, HttpStatus.OK);
         assertThat(response).isNull();
     }
 
@@ -239,7 +233,7 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         AnswerPost answerPostReactedOn = existingAnswerPosts.getFirst();
         Reaction reactionToSaveOnAnswerPost = createReactionOnAnswerPost(answerPostReactedOn);
 
-        Reaction createdFirstReaction = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class,
+        Reaction createdFirstReaction = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class,
                 HttpStatus.CREATED);
         checkCreatedReaction(reactionToSaveOnAnswerPost, createdFirstReaction);
         assertThat(answerPostReactedOn.getReactions()).hasSize(reactionRepository.findReactionsByAnswerPostId(answerPostReactedOn.getId()).size() - 1);
@@ -249,7 +243,7 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         // change the emojiId to react differently
         reactionToSaveOnAnswerPost.setEmojiId("cry");
 
-        Reaction createdSecondReaction = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class,
+        Reaction createdSecondReaction = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class,
                 HttpStatus.CREATED);
         checkCreatedReaction(reactionToSaveOnAnswerPost, createdSecondReaction);
         assertThat(answerPostReactedOn.getReactions()).hasSize(reactionRepository.findReactionsByAnswerPostId(answerPostReactedOn.getId()).size() - 2);
@@ -262,7 +256,7 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         AnswerPost answerPostReactedOn = existingAnswerPosts.getFirst();
         Reaction reactionToSaveOnAnswerPost = createReactionOnAnswerPost(answerPostReactedOn);
 
-        Reaction createdFirstReaction = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class,
+        Reaction createdFirstReaction = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class,
                 HttpStatus.CREATED);
         checkCreatedReaction(reactionToSaveOnAnswerPost, createdFirstReaction);
         assertThat(answerPostReactedOn.getReactions()).hasSize(reactionRepository.findReactionsByAnswerPostId(answerPostReactedOn.getId()).size() - 1);
@@ -272,7 +266,7 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         // change the emojiId to react differently
         reactionToSaveOnAnswerPost.setEmojiId("cry");
 
-        Reaction createdSecondReaction = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class,
+        Reaction createdSecondReaction = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class,
                 HttpStatus.CREATED);
         checkCreatedReaction(reactionToSaveOnAnswerPost, createdSecondReaction);
         assertThat(answerPostReactedOn.getReactions()).hasSize(reactionRepository.findReactionsByAnswerPostId(answerPostReactedOn.getId()).size() - 2);
@@ -285,9 +279,8 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         AnswerPost answerPostReactedOn = existingAnswerPosts.getFirst();
         Reaction reactionToSaveOnAnswerPost = createReactionOnAnswerPost(answerPostReactedOn);
 
-        Reaction createdReaction = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class,
-                HttpStatus.CREATED);
-        request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", createdReaction, Reaction.class, HttpStatus.BAD_REQUEST);
+        Reaction createdReaction = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnAnswerPost, Reaction.class, HttpStatus.CREATED);
+        request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", createdReaction, Reaction.class, HttpStatus.BAD_REQUEST);
         checkCreatedReaction(reactionToSaveOnAnswerPost, createdReaction);
         assertThat(answerPostReactedOn.getReactions()).hasSize(reactionRepository.findReactionsByAnswerPostId(answerPostReactedOn.getId()).size() - 1);
     }
@@ -297,7 +290,7 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
     void testValidateReactionConstraintViolation() throws Exception {
         Reaction invalidReaction = createInvalidReaction();
 
-        request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", invalidReaction, Reaction.class, HttpStatus.BAD_REQUEST);
+        request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", invalidReaction, Reaction.class, HttpStatus.BAD_REQUEST);
         Set<ConstraintViolation<Reaction>> constraintViolations = validator.validate(invalidReaction);
         assertThat(constraintViolations).hasSize(1);
     }
@@ -332,7 +325,7 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         params.add("sortingOrder", sortingOrder.toString());
         params.add("courseWideChannelIds", "");
 
-        List<Post> returnedPosts = request.getList("/api/communication/courses/" + courseId + "/messages", HttpStatus.OK, Post.class, params);
+        List<Post> returnedPosts = request.getList("/api/courses/" + courseId + "/messages", HttpStatus.OK, Post.class, params);
 
         Long numberOfMaxVotesSeenOnAnyPost = Long.MAX_VALUE;
         for (Post post : returnedPosts) {
@@ -369,7 +362,7 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         params.add("sortingOrder", sortingOrder.toString());
         params.add("courseWideChannelIds", "");
 
-        List<Post> returnedPosts = request.getList("/api/communication/courses/" + courseId + "/messages", HttpStatus.OK, Post.class, params);
+        List<Post> returnedPosts = request.getList("/api/courses/" + courseId + "/messages", HttpStatus.OK, Post.class, params);
 
         Long numberOfMaxVotesSeenOnAnyPost = 0L;
         for (Post post : returnedPosts) {
@@ -389,19 +382,18 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         Post postReactedOn = existingPostsWithAnswers.getFirst();
         Reaction reactionToSaveOnPost = createReactionOnPost(postReactedOn);
 
-        Reaction reactionToBeDeleted = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class,
-                HttpStatus.CREATED);
+        Reaction reactionToBeDeleted = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class, HttpStatus.CREATED);
 
         course.setCourseInformationSharingConfiguration(courseInformationSharingConfiguration);
         courseRepository.save(course);
 
         // student 1 deletes their reaction on this post
         if (!shouldBeAllowed) {
-            request.delete("/api/communication/courses/" + courseId + "/postings/reactions/" + reactionToBeDeleted.getId(), HttpStatus.BAD_REQUEST);
+            request.delete("/api/courses/" + courseId + "/postings/reactions/" + reactionToBeDeleted.getId(), HttpStatus.BAD_REQUEST);
             return;
         }
 
-        request.delete("/api/communication/courses/" + courseId + "/postings/reactions/" + reactionToBeDeleted.getId(), HttpStatus.OK);
+        request.delete("/api/courses/" + courseId + "/postings/reactions/" + reactionToBeDeleted.getId(), HttpStatus.OK);
 
         assertThat(postReactedOn.getReactions()).hasSameSizeAs(reactionRepository.findReactionsByPostId(postReactedOn.getId()));
         assertThat(reactionRepository.findById(reactionToBeDeleted.getId())).isEmpty();
@@ -414,13 +406,12 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         Post postReactedOn = existingPostsWithAnswers.getFirst();
         Reaction reactionToSaveOnPost = createVoteReactionOnPost(postReactedOn, null);
 
-        Reaction reactionToBeDeleted = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class,
-                HttpStatus.CREATED);
+        Reaction reactionToBeDeleted = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class, HttpStatus.CREATED);
         // should increase post's vote count
         assertThat(conversationMessageRepository.findById(postReactedOn.getId()).orElseThrow().getVoteCount()).isEqualTo(postReactedOn.getVoteCount() + 1);
 
         // student 1 deletes their reaction on this post
-        request.delete("/api/communication/courses/" + courseId + "/postings/reactions/" + reactionToBeDeleted.getId(), HttpStatus.OK);
+        request.delete("/api/courses/" + courseId + "/postings/reactions/" + reactionToBeDeleted.getId(), HttpStatus.OK);
 
         assertThat(postReactedOn.getReactions()).hasSameSizeAs(reactionRepository.findReactionsByPostId(postReactedOn.getId()));
         assertThat(reactionRepository.findById(reactionToBeDeleted.getId())).isEmpty();
@@ -436,19 +427,18 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         AnswerPost answerPostReactedOn = existingAnswerPosts.getFirst();
         Reaction reactionToSaveOnPost = createReactionOnAnswerPost(answerPostReactedOn);
 
-        Reaction reactionToBeDeleted = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class,
-                HttpStatus.CREATED);
+        Reaction reactionToBeDeleted = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class, HttpStatus.CREATED);
 
         course.setCourseInformationSharingConfiguration(courseInformationSharingConfiguration);
         courseRepository.save(course);
 
         // student 1 deletes their reaction on this post
         if (!shouldBeAllowed) {
-            request.delete("/api/communication/courses/" + courseId + "/postings/reactions/" + reactionToBeDeleted.getId(), HttpStatus.BAD_REQUEST);
+            request.delete("/api/courses/" + courseId + "/postings/reactions/" + reactionToBeDeleted.getId(), HttpStatus.BAD_REQUEST);
             return;
         }
 
-        request.delete("/api/communication/courses/" + courseId + "/postings/reactions/" + reactionToBeDeleted.getId(), HttpStatus.OK);
+        request.delete("/api/courses/" + courseId + "/postings/reactions/" + reactionToBeDeleted.getId(), HttpStatus.OK);
         assertThat(answerPostReactedOn.getReactions()).hasSameSizeAs(reactionRepository.findReactionsByPostId(answerPostReactedOn.getId()));
         assertThat(reactionRepository.findById(reactionToBeDeleted.getId())).isEmpty();
     }
@@ -461,7 +451,7 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         Reaction reactionSaveOnPost = saveReactionOfOtherUserOnPost(postReactedOn, TEST_PREFIX);
 
         // student 1 wants to delete the reaction of student 2
-        request.delete("/api/communication/courses/" + courseId + "/postings/reactions/" + reactionSaveOnPost.getId(), HttpStatus.FORBIDDEN);
+        request.delete("/api/courses/" + courseId + "/postings/reactions/" + reactionSaveOnPost.getId(), HttpStatus.FORBIDDEN);
         assertThat(postReactedOn.getReactions()).hasSize(reactionRepository.findReactionsByPostId(postReactedOn.getId()).size() - 1);
     }
 
@@ -472,7 +462,7 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         Post postToReactOn = existingPostsWithAnswers.getFirst();
         Reaction reactionToSaveOnPost = createReactionOnPost(postToReactOn);
 
-        request.delete("/api/communication/courses/" + dummyCourse.getCourseIcon() + "/postings/reactions/" + reactionToSaveOnPost.getId(), HttpStatus.BAD_REQUEST);
+        request.delete("/api/courses/" + dummyCourse.getCourseIcon() + "/postings/reactions/" + reactionToSaveOnPost.getId(), HttpStatus.BAD_REQUEST);
         assertThat(postToReactOn.getReactions()).hasSameSizeAs(postRepository.findById(postToReactOn.getId()).orElseThrow().getReactions());
     }
 
@@ -483,11 +473,10 @@ class ReactionIntegrationTest extends AbstractSpringIntegrationIndependentTest {
         Post postReactedOn = existingPostsWithAnswers.getFirst();
         Reaction reactionToSaveOnPost = createReactionOnPost(postReactedOn);
 
-        Reaction reactionToBeDeleted = request.postWithResponseBody("/api/communication/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class,
-                HttpStatus.CREATED);
+        Reaction reactionToBeDeleted = request.postWithResponseBody("/api/courses/" + courseId + "/postings/reactions", reactionToSaveOnPost, Reaction.class, HttpStatus.CREATED);
 
         // student 2 deletes their reaction on this post
-        request.delete("/api/communication/courses/" + courseId + "/postings/reactions/" + reactionToBeDeleted.getId(), HttpStatus.OK);
+        request.delete("/api/courses/" + courseId + "/postings/reactions/" + reactionToBeDeleted.getId(), HttpStatus.OK);
         assertThat(postReactedOn.getReactions()).hasSameSizeAs(reactionRepository.findReactionsByPostId(postReactedOn.getId()));
         assertThat(reactionRepository.findById(reactionToBeDeleted.getId())).isEmpty();
     }

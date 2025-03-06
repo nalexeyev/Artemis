@@ -20,7 +20,7 @@ import de.tum.cit.aet.artemis.core.service.feature.FeatureToggleService;
 @Profile(PROFILE_CORE)
 @EnforceAdmin
 @RestController
-@RequestMapping("api/core/admin/")
+@RequestMapping("api/admin/")
 public class AdminFeatureToggleResource {
 
     private final FeatureToggleService featureToggleService;

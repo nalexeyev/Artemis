@@ -34,7 +34,7 @@ import de.tum.cit.aet.artemis.core.security.annotations.EnforceAtLeastTutor;
  */
 @Profile(PROFILE_CORE)
 @RestController
-@RequestMapping("api/assessment/")
+@RequestMapping("api/")
 public class ComplaintResponseResource {
 
     private static final Logger log = LoggerFactory.getLogger(ComplaintResponseResource.class);

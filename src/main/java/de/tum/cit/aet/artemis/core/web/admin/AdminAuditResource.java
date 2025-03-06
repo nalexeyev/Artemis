@@ -32,7 +32,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @Profile(PROFILE_CORE)
 @EnforceAdmin
 @RestController
-@RequestMapping("api/core/admin/")
+@RequestMapping("api/admin/")
 public class AdminAuditResource {
 
     private final AuditEventService auditEventService;

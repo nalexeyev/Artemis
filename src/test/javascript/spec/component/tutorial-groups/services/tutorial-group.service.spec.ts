@@ -18,7 +18,7 @@ describe('TutorialGroupService', () => {
     // @ts-ignore
     let tutorialGroupsConfigurationService: jest.Mocked<TutorialGroupsConfigurationService>;
     let elemDefault: TutorialGroup;
-    const resourceURL = 'api/tutorialgroup';
+    const resourceURL = 'api';
 
     beforeEach(() => {
         const spySessionService = {

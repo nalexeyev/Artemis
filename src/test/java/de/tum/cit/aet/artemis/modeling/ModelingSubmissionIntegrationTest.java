@@ -170,14 +170,14 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
     void createModelingSubmission_badRequest() throws Exception {
         ModelingSubmission submission = ParticipationFactory.generateModelingSubmission(validModel, true);
         modelingSubmissionRepo.save(submission);
-        request.postWithResponseBody("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions", submission, ModelingSubmission.class, HttpStatus.BAD_REQUEST);
+        request.postWithResponseBody("/api/exercises/" + classExercise.getId() + "/modeling-submissions", submission, ModelingSubmission.class, HttpStatus.BAD_REQUEST);
     }
 
     @Test
     @WithMockUser(username = TEST_PREFIX + "student4", roles = "USER")
     void createModelingSubmission_studentNotInCourse() throws Exception {
         ModelingSubmission submission = ParticipationFactory.generateModelingSubmission(validModel, true);
-        request.postWithResponseBody("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions", submission, ModelingSubmission.class, HttpStatus.FORBIDDEN);
+        request.postWithResponseBody("/api/exercises/" + classExercise.getId() + "/modeling-submissions", submission, ModelingSubmission.class, HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -189,13 +189,13 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         char[] charsModel = new char[(int) (Constants.MAX_SUBMISSION_MODEL_LENGTH)];
         Arrays.fill(charsModel, 'a');
         submission.setModel(new String(charsModel));
-        request.postWithResponseBody("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions", submission, ModelingSubmission.class, HttpStatus.OK);
+        request.postWithResponseBody("/api/exercises/" + classExercise.getId() + "/modeling-submissions", submission, ModelingSubmission.class, HttpStatus.OK);
 
         // should be too large
         char[] charsModelTooLarge = new char[(int) (Constants.MAX_SUBMISSION_MODEL_LENGTH + 1)];
         Arrays.fill(charsModelTooLarge, 'a');
         submission.setModel(new String(charsModelTooLarge));
-        request.postWithResponseBody("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions", submission, ModelingSubmission.class, HttpStatus.BAD_REQUEST);
+        request.postWithResponseBody("/api/exercises/" + classExercise.getId() + "/modeling-submissions", submission, ModelingSubmission.class, HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -328,12 +328,12 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
 
         returnedSubmission.setModel(validModel);
         returnedSubmission.setSubmitted(false);
-        request.putWithResponseBody("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions", returnedSubmission, ModelingSubmission.class, HttpStatus.OK);
+        request.putWithResponseBody("/api/exercises/" + classExercise.getId() + "/modeling-submissions", returnedSubmission, ModelingSubmission.class, HttpStatus.OK);
 
         modelingExerciseUtilService.checkModelingSubmissionCorrectlyStored(returnedSubmission.getId(), validModel);
 
         returnedSubmission.setSubmitted(true);
-        returnedSubmission = request.putWithResponseBody("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions", returnedSubmission, ModelingSubmission.class,
+        returnedSubmission = request.putWithResponseBody("/api/exercises/" + classExercise.getId() + "/modeling-submissions", returnedSubmission, ModelingSubmission.class,
                 HttpStatus.OK);
         StudentParticipation studentParticipation = (StudentParticipation) returnedSubmission.getParticipation();
         assertThat(studentParticipation.getResults()).as("do not send old results to the client").isEmpty();
@@ -353,7 +353,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         result.setRated(true);
         result.setAssessor(user);
         submission.addResult(result);
-        ModelingSubmission storedSubmission = request.postWithResponseBody("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions", submission,
+        ModelingSubmission storedSubmission = request.postWithResponseBody("/api/exercises/" + classExercise.getId() + "/modeling-submissions", submission,
                 ModelingSubmission.class);
 
         userUtilService.changeUser(TEST_PREFIX + "student1");
@@ -367,8 +367,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         ModelingSubmission submission1 = modelingExerciseUtilService.addModelingSubmission(classExercise, submittedSubmission, TEST_PREFIX + "student1");
         ModelingSubmission submission2 = modelingExerciseUtilService.addModelingSubmission(classExercise, unsubmittedSubmission, TEST_PREFIX + "student2");
 
-        List<ModelingSubmission> submissions = request.getList("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions", HttpStatus.OK,
-                ModelingSubmission.class);
+        List<ModelingSubmission> submissions = request.getList("/api/exercises/" + classExercise.getId() + "/modeling-submissions", HttpStatus.OK, ModelingSubmission.class);
 
         assertThat(submissions).as("contains both submissions").containsExactlyInAnyOrder(submission1, submission2);
     }
@@ -376,25 +375,25 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
     @Test
     @WithMockUser(username = TEST_PREFIX + "instructor2", roles = "INSTRUCTOR")
     void getAllSubmissionsOfExercise_instructorNotInCourse() throws Exception {
-        request.getList("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions", HttpStatus.FORBIDDEN, ModelingSubmission.class);
+        request.getList("/api/exercises/" + classExercise.getId() + "/modeling-submissions", HttpStatus.FORBIDDEN, ModelingSubmission.class);
     }
 
     @Test
     @WithMockUser(username = TEST_PREFIX + "tutor1", roles = "TA")
     void getAllSubmissionsOfExercise_assessedByTutor() throws Exception {
-        List<ModelingSubmission> submissions = request.getList("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions?assessedByTutor=true", HttpStatus.OK,
+        List<ModelingSubmission> submissions = request.getList("/api/exercises/" + classExercise.getId() + "/modeling-submissions?assessedByTutor=true", HttpStatus.OK,
                 ModelingSubmission.class);
         assertThat(submissions).as("does not have a modeling submission assessed by the tutor").isEmpty();
 
         modelingExerciseUtilService.addModelingSubmissionWithFinishedResultAndAssessor(classExercise, submittedSubmission, TEST_PREFIX + "student1", TEST_PREFIX + "tutor1");
-        submissions = request.getList("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions?assessedByTutor=true", HttpStatus.OK, ModelingSubmission.class);
+        submissions = request.getList("/api/exercises/" + classExercise.getId() + "/modeling-submissions?assessedByTutor=true", HttpStatus.OK, ModelingSubmission.class);
         assertThat(submissions).as("has a modeling submission assessed by the tutor").hasSizeGreaterThanOrEqualTo(1);
     }
 
     @Test
     @WithMockUser(username = TEST_PREFIX + "tutor2", roles = "TA")
     void getAllSubmissionsOfExercise_assessedByTutor_instructorNotInCourse() throws Exception {
-        request.getList("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions?assessedByTutor=true", HttpStatus.FORBIDDEN, ModelingSubmission.class);
+        request.getList("/api/exercises/" + classExercise.getId() + "/modeling-submissions?assessedByTutor=true", HttpStatus.FORBIDDEN, ModelingSubmission.class);
     }
 
     @Test
@@ -403,8 +402,8 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         modelingExerciseUtilService.addModelingSubmission(classExercise, submittedSubmission, TEST_PREFIX + "student1");
         modelingExerciseUtilService.addModelingSubmission(classExercise, unsubmittedSubmission, TEST_PREFIX + "student2");
 
-        request.getList("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions", HttpStatus.FORBIDDEN, ModelingSubmission.class);
-        request.getList("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions?submittedOnly=true", HttpStatus.FORBIDDEN, ModelingSubmission.class);
+        request.getList("/api/exercises/" + classExercise.getId() + "/modeling-submissions", HttpStatus.FORBIDDEN, ModelingSubmission.class);
+        request.getList("/api/exercises/" + classExercise.getId() + "/modeling-submissions?submittedOnly=true", HttpStatus.FORBIDDEN, ModelingSubmission.class);
     }
 
     @Test
@@ -414,7 +413,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         modelingExerciseUtilService.addModelingSubmission(classExercise, unsubmittedSubmission, TEST_PREFIX + "student2");
         ModelingSubmission submission3 = modelingExerciseUtilService.addModelingSubmission(classExercise, generateSubmittedSubmission(), TEST_PREFIX + "student3");
 
-        List<ModelingSubmission> submissions = request.getList("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions?submittedOnly=true", HttpStatus.OK,
+        List<ModelingSubmission> submissions = request.getList("/api/exercises/" + classExercise.getId() + "/modeling-submissions?submittedOnly=true", HttpStatus.OK,
                 ModelingSubmission.class);
 
         assertThat(submissions).as("contains only submitted submission").containsExactlyInAnyOrder(submission1, submission3);
@@ -427,7 +426,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         ModelingSubmission submission = ParticipationFactory.generateModelingSubmission(validModel, true);
         submission = modelingExerciseUtilService.addModelingSubmission(classExercise, submission, TEST_PREFIX + "student1");
 
-        ModelingSubmission storedSubmission = request.get("/api/modeling/modeling-submissions/" + submission.getId(), HttpStatus.OK, ModelingSubmission.class);
+        ModelingSubmission storedSubmission = request.get("/api/modeling-submissions/" + submission.getId(), HttpStatus.OK, ModelingSubmission.class);
 
         assertThat(storedSubmission.getLatestResult()).as("result has been set").isNotNull();
         assertThat(storedSubmission.getLatestResult().getAssessor()).as("assessor is tutor1").isEqualTo(user);
@@ -440,8 +439,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         ModelingSubmission submission = ParticipationFactory.generateModelingSubmission(validModel, true);
         submission = modelingExerciseUtilService.addModelingSubmission(classExercise, submission, TEST_PREFIX + "student1");
 
-        ModelingSubmission storedSubmission = request.get("/api/modeling/modeling-submissions/" + submission.getId() + "?withoutResults=true", HttpStatus.OK,
-                ModelingSubmission.class);
+        ModelingSubmission storedSubmission = request.get("/api/modeling-submissions/" + submission.getId() + "?withoutResults=true", HttpStatus.OK, ModelingSubmission.class);
 
         assertThat(storedSubmission.getLatestResult()).as("result has not been set").isNull();
     }
@@ -452,7 +450,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         ModelingSubmission submission = ParticipationFactory.generateModelingSubmission(validModel, true);
         submission = modelingExerciseUtilService.addModelingSubmission(classExercise, submission, TEST_PREFIX + "student1");
 
-        request.get("/api/modeling/modeling-submissions/" + submission.getId(), HttpStatus.FORBIDDEN, ModelingSubmission.class);
+        request.get("/api/modeling-submissions/" + submission.getId(), HttpStatus.FORBIDDEN, ModelingSubmission.class);
     }
 
     @Test
@@ -478,7 +476,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         submissionA.setPlagiarismCase(plagiarismCase);
         plagiarismComparisonRepository.save(plagiarismComparison);
 
-        var submissionResult = request.get("/api/modeling/modeling-submissions/" + submission.getId(), HttpStatus.OK, ModelingSubmission.class);
+        var submissionResult = request.get("/api/modeling-submissions/" + submission.getId(), HttpStatus.OK, ModelingSubmission.class);
 
         assertThat(submissionResult.getParticipation()).as("Should anonymize participation").isNull();
         assertThat(submissionResult.getResults()).as("Should anonymize results").isEmpty();
@@ -490,7 +488,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
     void getModelSubmissionWithResult_notInvolved_notAllowed() throws Exception {
         ModelingSubmission submission = ParticipationFactory.generateModelingSubmission(validModel, true);
         submission = modelingExerciseUtilService.addModelingSubmission(classExercise, submission, TEST_PREFIX + "student1");
-        request.get("/api/modeling/modeling-submissions/" + submission.getId(), HttpStatus.FORBIDDEN, ModelingSubmission.class);
+        request.get("/api/modeling-submissions/" + submission.getId(), HttpStatus.FORBIDDEN, ModelingSubmission.class);
     }
 
     @Test
@@ -507,7 +505,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
 
         plagiarismComparisonRepository.save(plagiarismComparison);
 
-        request.get("/api/modeling/modeling-submissions/" + submission.getId(), HttpStatus.FORBIDDEN, ModelingSubmission.class);
+        request.get("/api/modeling-submissions/" + submission.getId(), HttpStatus.FORBIDDEN, ModelingSubmission.class);
     }
 
     @Test
@@ -518,7 +516,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         ModelingSubmission submission = ParticipationFactory.generateModelingSubmission(validModel, true);
         submission = modelingExerciseUtilService.addModelingSubmissionWithResultAndAssessor(useCaseExercise, submission, TEST_PREFIX + "student1", TEST_PREFIX + "tutor1");
 
-        ModelingSubmission storedSubmission = request.get("/api/modeling/modeling-submissions/" + submission.getId(), HttpStatus.OK, ModelingSubmission.class);
+        ModelingSubmission storedSubmission = request.get("/api/modeling-submissions/" + submission.getId(), HttpStatus.OK, ModelingSubmission.class);
 
         assertThat(storedSubmission.getLatestResult()).as("result has been set").isNotNull();
         assertThat(storedSubmission.getLatestResult().getAssessor()).as("assessor is tutor1").isEqualTo(user);
@@ -532,7 +530,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         ModelingSubmission submission = ParticipationFactory.generateModelingSubmission(validModel, true);
         modelingExerciseUtilService.addModelingSubmission(useCaseExercise, submission, TEST_PREFIX + "student2");
 
-        request.get("/api/modeling/modeling-submissions/" + submission.getId(), HttpStatus.BAD_REQUEST, ModelingSubmission.class);
+        request.get("/api/modeling-submissions/" + submission.getId(), HttpStatus.BAD_REQUEST, ModelingSubmission.class);
     }
 
     @Test
@@ -544,7 +542,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         Result storedResult = submission.getResultForCorrectionRound(1);
         var params = new LinkedMultiValueMap<String, String>();
         params.add("resultId", String.valueOf(storedResult.getId()));
-        ModelingSubmission storedSubmission = request.get("/api/modeling/modeling-submissions/" + submission.getId(), HttpStatus.OK, ModelingSubmission.class, params);
+        ModelingSubmission storedSubmission = request.get("/api/modeling-submissions/" + submission.getId(), HttpStatus.OK, ModelingSubmission.class, params);
 
         assertThat(storedSubmission.getResults()).isNotNull();
         assertThat(storedSubmission.getResults()).contains(storedResult);
@@ -560,7 +558,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         Result storedResult = submission.getResultForCorrectionRound(0);
         var params = new LinkedMultiValueMap<String, String>();
         params.add("resultId", String.valueOf(storedResult.getId()));
-        request.get("/api/modeling/modeling-submissions/" + submission.getId(), HttpStatus.FORBIDDEN, ModelingSubmission.class, params);
+        request.get("/api/modeling-submissions/" + submission.getId(), HttpStatus.FORBIDDEN, ModelingSubmission.class, params);
     }
 
     @Test
@@ -571,7 +569,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
 
         exerciseUtilService.updateExerciseDueDate(classExercise.getId(), ZonedDateTime.now().minusHours(1));
 
-        ModelingSubmission storedSubmission = request.get("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.OK,
+        ModelingSubmission storedSubmission = request.get("/api/exercises/" + classExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.OK,
                 ModelingSubmission.class);
 
         assertThat(storedSubmission).as("submission was found").usingRecursiveComparison().ignoringFields("results", "submissionDate", "participation").isEqualTo(submission);
@@ -592,7 +590,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
 
         compassService.build(classExercise);
 
-        ModelingSubmission storedSubmission = request.get("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submission-without-assessment?lock=true", HttpStatus.OK,
+        ModelingSubmission storedSubmission = request.get("/api/exercises/" + classExercise.getId() + "/modeling-submission-without-assessment?lock=true", HttpStatus.OK,
                 ModelingSubmission.class);
 
         assertThat(storedSubmission).as("submission was found").isNotNull();
@@ -603,7 +601,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
     @Test
     @WithMockUser(username = TEST_PREFIX + "tutor1", roles = "TA")
     void getModelSubmissionWithoutAssessment_wrongExerciseType() throws Exception {
-        request.get("/api/modeling/exercises/" + textExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.BAD_REQUEST, ModelingSubmission.class);
+        request.get("/api/exercises/" + textExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.BAD_REQUEST, ModelingSubmission.class);
     }
 
     @Test
@@ -614,7 +612,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         submission = modelingExerciseUtilService.addModelingSubmission(classExercise, submission, TEST_PREFIX + "student1");
         exerciseUtilService.updateExerciseDueDate(classExercise.getId(), ZonedDateTime.now().minusHours(1));
 
-        ModelingSubmission storedSubmission = request.get("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submission-without-assessment?lock=true", HttpStatus.OK,
+        ModelingSubmission storedSubmission = request.get("/api/exercises/" + classExercise.getId() + "/modeling-submission-without-assessment?lock=true", HttpStatus.OK,
                 ModelingSubmission.class);
 
         // set dates to UTC and round to milliseconds for comparison
@@ -634,7 +632,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         modelingExerciseUtilService.addModelingSubmission(classExercise, submission, TEST_PREFIX + "student1");
         exerciseUtilService.updateExerciseDueDate(classExercise.getId(), ZonedDateTime.now().minusHours(1));
 
-        var response = request.get("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.OK, ModelingSubmission.class);
+        var response = request.get("/api/exercises/" + classExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.OK, ModelingSubmission.class);
         assertThat(response).isNull();
     }
 
@@ -645,7 +643,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         modelingExerciseUtilService.addModelingSubmissionWithResultAndAssessor(classExercise, submission, TEST_PREFIX + "student1", TEST_PREFIX + "tutor1");
         exerciseUtilService.updateExerciseDueDate(classExercise.getId(), ZonedDateTime.now().minusHours(1));
 
-        var response = request.get("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.OK, ModelingSubmission.class);
+        var response = request.get("/api/exercises/" + classExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.OK, ModelingSubmission.class);
         assertThat(response).isNull();
     }
 
@@ -655,7 +653,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         ModelingSubmission submission = ParticipationFactory.generateModelingSubmission(validModel, true);
         modelingExerciseUtilService.addModelingSubmission(classExercise, submission, TEST_PREFIX + "student1");
 
-        request.get("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.FORBIDDEN, ModelingSubmission.class);
+        request.get("/api/exercises/" + classExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.FORBIDDEN, ModelingSubmission.class);
     }
 
     @Test
@@ -665,7 +663,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         modelingExerciseUtilService.addModelingSubmission(classExercise, submission, TEST_PREFIX + "student1");
         exerciseUtilService.updateExerciseDueDate(classExercise.getId(), ZonedDateTime.now().minusHours(1));
 
-        request.get("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.FORBIDDEN, ModelingSubmission.class);
+        request.get("/api/exercises/" + classExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.FORBIDDEN, ModelingSubmission.class);
     }
 
     @Test
@@ -675,7 +673,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         modelingExerciseUtilService.addModelingSubmission(classExercise, submission, TEST_PREFIX + "student1");
         exerciseUtilService.updateExerciseDueDate(classExercise.getId(), ZonedDateTime.now().minusHours(1));
 
-        request.get("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.FORBIDDEN, ModelingSubmission.class);
+        request.get("/api/exercises/" + classExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.FORBIDDEN, ModelingSubmission.class);
     }
 
     @Test
@@ -686,10 +684,10 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         modelingExerciseUtilService.addModelingSubmission(useCaseExercise, newSubmission, TEST_PREFIX + "student1");
         exerciseUtilService.updateExerciseDueDate(useCaseExercise.getId(), ZonedDateTime.now().minusHours(1));
 
-        ModelingSubmission storedSubmission = request.get("/api/modeling/exercises/" + useCaseExercise.getId() + "/modeling-submission-without-assessment?lock=true", HttpStatus.OK,
+        ModelingSubmission storedSubmission = request.get("/api/exercises/" + useCaseExercise.getId() + "/modeling-submission-without-assessment?lock=true", HttpStatus.OK,
                 ModelingSubmission.class);
         assertThat(storedSubmission).as("submission was found").isNotNull();
-        request.get("/api/modeling/exercises/" + useCaseExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.BAD_REQUEST, ModelingSubmission.class);
+        request.get("/api/exercises/" + useCaseExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.BAD_REQUEST, ModelingSubmission.class);
     }
 
     @Test
@@ -707,10 +705,10 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         modelingExerciseUtilService.addModelingSubmission(useCaseExercise, newSubmission, TEST_PREFIX + "student1");
         exerciseUtilService.updateExerciseDueDate(useCaseExercise.getId(), ZonedDateTime.now().minusHours(1));
 
-        ModelingSubmission storedSubmission = request.get("/api/modeling/exercises/" + useCaseExercise.getId() + "/modeling-submission-without-assessment?lock=true", HttpStatus.OK,
+        ModelingSubmission storedSubmission = request.get("/api/exercises/" + useCaseExercise.getId() + "/modeling-submission-without-assessment?lock=true", HttpStatus.OK,
                 ModelingSubmission.class);
         assertThat(storedSubmission).as("submission was found").isNotNull();
-        request.get("/api/modeling/exercises/" + useCaseExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.BAD_REQUEST, ModelingSubmission.class);
+        request.get("/api/exercises/" + useCaseExercise.getId() + "/modeling-submission-without-assessment", HttpStatus.BAD_REQUEST, ModelingSubmission.class);
     }
 
     @Test
@@ -723,7 +721,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         submission = (ModelingSubmission) modelingExerciseUtilService.addModelingSubmissionWithFinishedResultAndAssessor(classExercise, submission, TEST_PREFIX + "student1",
                 TEST_PREFIX + "tutor1");
 
-        ModelingSubmission receivedSubmission = request.get("/api/modeling/participations/" + submission.getParticipation().getId() + "/latest-modeling-submission", HttpStatus.OK,
+        ModelingSubmission receivedSubmission = request.get("/api/participations/" + submission.getParticipation().getId() + "/latest-modeling-submission", HttpStatus.OK,
                 ModelingSubmission.class);
 
         // set dates to UTC and round to milliseconds for comparison
@@ -736,7 +734,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         // students can only see their own models
         submission = ParticipationFactory.generateModelingSubmission(validModel, true);
         submission = modelingExerciseUtilService.addModelingSubmission(classExercise, submission, TEST_PREFIX + "student2");
-        request.get("/api/modeling/participations/" + submission.getParticipation().getId() + "/latest-modeling-submission", HttpStatus.FORBIDDEN, ModelingSubmission.class);
+        request.get("/api/participations/" + submission.getParticipation().getId() + "/latest-modeling-submission", HttpStatus.FORBIDDEN, ModelingSubmission.class);
     }
 
     @Test
@@ -747,11 +745,11 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         participation.setParticipant(user);
         participation.setExercise(null);
         StudentParticipation studentParticipation = studentParticipationRepository.save(participation);
-        request.get("/api/modeling/participations/" + studentParticipation.getId() + "/latest-modeling-submission", HttpStatus.BAD_REQUEST, ModelingSubmission.class);
+        request.get("/api/participations/" + studentParticipation.getId() + "/latest-modeling-submission", HttpStatus.BAD_REQUEST, ModelingSubmission.class);
 
         participation.setExercise(textExercise);
         studentParticipation = studentParticipationRepository.save(participation);
-        request.get("/api/modeling/participations/" + studentParticipation.getId() + "/latest-modeling-submission", HttpStatus.BAD_REQUEST, ModelingSubmission.class);
+        request.get("/api/participations/" + studentParticipation.getId() + "/latest-modeling-submission", HttpStatus.BAD_REQUEST, ModelingSubmission.class);
     }
 
     @Test
@@ -777,8 +775,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         ModelingSubmission modelingSubmission = ParticipationFactory.generateModelingSubmission("Some text", true);
         modelingSubmission = modelingExerciseUtilService.addModelingSubmissionWithResultAndAssessor(modelingExercise, modelingSubmission, TEST_PREFIX + "student1",
                 TEST_PREFIX + "tutor1");
-        request.get("/api/modeling/participations/" + modelingSubmission.getParticipation().getId() + "/latest-modeling-submission", HttpStatus.FORBIDDEN,
-                ModelingSubmission.class);
+        request.get("/api/participations/" + modelingSubmission.getParticipation().getId() + "/latest-modeling-submission", HttpStatus.FORBIDDEN, ModelingSubmission.class);
     }
 
     @Test
@@ -808,7 +805,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         modelingSubmission = modelingExerciseUtilService.addModelingSubmissionWithResultAndAssessor(modelingExercise, modelingSubmission, TEST_PREFIX + "student1",
                 TEST_PREFIX + "tutor1");
         // students can always view their submissions for test exams
-        var submission = request.get("/api/modeling/participations/" + modelingSubmission.getParticipation().getId() + "/latest-modeling-submission", HttpStatus.OK,
+        var submission = request.get("/api/participations/" + modelingSubmission.getParticipation().getId() + "/latest-modeling-submission", HttpStatus.OK,
                 ModelingSubmission.class);
         assertThat(submission).isNotNull();
         assertThat(submission.getId()).isEqualTo(modelingSubmission.getId());
@@ -821,7 +818,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
     void getSubmissionForModelingEditor_emptySubmission() throws Exception {
         StudentParticipation studentParticipation = participationUtilService.createAndSaveParticipationForExercise(classExercise, TEST_PREFIX + "student1");
         assertThat(studentParticipation.getSubmissions()).isEmpty();
-        ModelingSubmission returnedSubmission = request.get("/api/modeling/participations/" + studentParticipation.getId() + "/latest-modeling-submission", HttpStatus.OK,
+        ModelingSubmission returnedSubmission = request.get("/api/participations/" + studentParticipation.getId() + "/latest-modeling-submission", HttpStatus.OK,
                 ModelingSubmission.class);
         assertThat(returnedSubmission).as("new submission is created").isNotNull();
     }
@@ -832,7 +829,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         StudentParticipation studentParticipation = participationUtilService.createAndSaveParticipationForExercise(classExercise, TEST_PREFIX + "student1");
         modelingExerciseUtilService.addModelingSubmissionWithEmptyResult(classExercise, "", TEST_PREFIX + "student1");
 
-        ModelingSubmission returnedSubmission = request.get("/api/modeling/participations/" + studentParticipation.getId() + "/latest-modeling-submission", HttpStatus.OK,
+        ModelingSubmission returnedSubmission = request.get("/api/participations/" + studentParticipation.getId() + "/latest-modeling-submission", HttpStatus.OK,
                 ModelingSubmission.class);
         assertThat(returnedSubmission.getLatestResult()).as("the result is not sent to the client if the assessment is not finished").isNull();
     }
@@ -842,13 +839,13 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
     void submitExercise_afterDueDate_forbidden() throws Exception {
         afterDueDateParticipation.setInitializationDate(ZonedDateTime.now().minusDays(2));
         studentParticipationRepository.saveAndFlush(afterDueDateParticipation);
-        request.post("/api/modeling/exercises/" + finishedExercise.getId() + "/modeling-submissions", submittedSubmission, HttpStatus.FORBIDDEN);
+        request.post("/api/exercises/" + finishedExercise.getId() + "/modeling-submissions", submittedSubmission, HttpStatus.FORBIDDEN);
     }
 
     @Test
     @WithMockUser(username = TEST_PREFIX + "student3", roles = "USER")
     void submitExercise_beforeDueDate_allowed() throws Exception {
-        ModelingSubmission submission = request.postWithResponseBody("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions", submittedSubmission,
+        ModelingSubmission submission = request.postWithResponseBody("/api/exercises/" + classExercise.getId() + "/modeling-submissions", submittedSubmission,
                 ModelingSubmission.class, HttpStatus.OK);
 
         assertThat(submission.getSubmissionDate()).isCloseTo(ZonedDateTime.now(), within(500, ChronoUnit.MILLIS));
@@ -859,8 +856,8 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
     @WithMockUser(username = TEST_PREFIX + "student3", roles = "USER")
     void submitExercise_beforeDueDateSecondSubmission_allowed() throws Exception {
         submittedSubmission.setModel(validModel);
-        submittedSubmission = request.postWithResponseBody("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions", submittedSubmission,
-                ModelingSubmission.class, HttpStatus.OK);
+        submittedSubmission = request.postWithResponseBody("/api/exercises/" + classExercise.getId() + "/modeling-submissions", submittedSubmission, ModelingSubmission.class,
+                HttpStatus.OK);
 
         final var submissionInDb = modelingSubmissionRepo.findById(submittedSubmission.getId());
         assertThat(submissionInDb).isPresent();
@@ -873,13 +870,13 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         afterDueDateParticipation.setInitializationDate(ZonedDateTime.now());
         studentParticipationRepository.saveAndFlush(afterDueDateParticipation);
 
-        request.postWithoutLocation("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions", submittedSubmission, HttpStatus.OK, null);
+        request.postWithoutLocation("/api/exercises/" + classExercise.getId() + "/modeling-submissions", submittedSubmission, HttpStatus.OK, null);
     }
 
     @Test
     @WithMockUser(username = TEST_PREFIX + "student3", roles = "USER")
     void saveExercise_beforeDueDate() throws Exception {
-        ModelingSubmission storedSubmission = request.postWithResponseBody("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions", unsubmittedSubmission,
+        ModelingSubmission storedSubmission = request.postWithResponseBody("/api/exercises/" + classExercise.getId() + "/modeling-submissions", unsubmittedSubmission,
                 ModelingSubmission.class, HttpStatus.OK);
         assertThat(storedSubmission.isSubmitted()).isTrue();
     }
@@ -891,7 +888,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         afterDueDateParticipation.setInitializationDate(ZonedDateTime.now());
         studentParticipationRepository.saveAndFlush(afterDueDateParticipation);
 
-        ModelingSubmission storedSubmission = request.postWithResponseBody("/api/modeling/exercises/" + classExercise.getId() + "/modeling-submissions", unsubmittedSubmission,
+        ModelingSubmission storedSubmission = request.postWithResponseBody("/api/exercises/" + classExercise.getId() + "/modeling-submissions", unsubmittedSubmission,
                 ModelingSubmission.class, HttpStatus.OK);
         assertThat(storedSubmission.isSubmitted()).isFalse();
     }
@@ -915,7 +912,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         createResult(AssessmentType.AUTOMATIC_ATHENA, submission, participation, null);
         createResult(AssessmentType.MANUAL, submission, participation, null);
 
-        List<Submission> submissions = request.getList("/api/modeling/participations/" + participation.getId() + "/submissions-with-results", HttpStatus.OK, Submission.class);
+        List<Submission> submissions = request.getList("/api/participations/" + participation.getId() + "/submissions-with-results", HttpStatus.OK, Submission.class);
 
         // Verify that only the ATHENA result is returned
         assertThat(submissions).hasSize(1);
@@ -945,7 +942,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         createResult(AssessmentType.AUTOMATIC_ATHENA, submission, participation, null);
         createResult(AssessmentType.MANUAL, submission, participation, null);
 
-        List<Submission> submissions = request.getList("/api/modeling/participations/" + participation.getId() + "/submissions-with-results", HttpStatus.OK, Submission.class);
+        List<Submission> submissions = request.getList("/api/participations/" + participation.getId() + "/submissions-with-results", HttpStatus.OK, Submission.class);
 
         // Verify that only the ATHENA result is returned before the assessment due date
         assertThat(submissions).hasSize(1);
@@ -975,7 +972,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         createResult(AssessmentType.AUTOMATIC_ATHENA, submission, participation, null);
         createResult(AssessmentType.MANUAL, submission, participation, null);
 
-        List<Submission> submissions = request.getList("/api/modeling/participations/" + participation.getId() + "/submissions-with-results", HttpStatus.OK, Submission.class);
+        List<Submission> submissions = request.getList("/api/participations/" + participation.getId() + "/submissions-with-results", HttpStatus.OK, Submission.class);
 
         // Verify that both results are returned after the assessment due date
         assertThat(submissions).hasSize(1);
@@ -998,7 +995,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         participation.addSubmission(submission);
         studentParticipationRepository.save(participation);
 
-        List<Submission> submissions = request.getList("/api/modeling/participations/" + participation.getId() + "/submissions-with-results", HttpStatus.OK, Submission.class);
+        List<Submission> submissions = request.getList("/api/participations/" + participation.getId() + "/submissions-with-results", HttpStatus.OK, Submission.class);
 
         assertThat(submissions).isEmpty();
     }
@@ -1011,7 +1008,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         StudentParticipation participation = participationUtilService.createAndSaveParticipationForExercise(classExercise, TEST_PREFIX + "student2");
 
         // When & Then
-        request.getList("/api/modeling/participations/" + participation.getId() + "/submissions-with-results", HttpStatus.FORBIDDEN, Submission.class);
+        request.getList("/api/participations/" + participation.getId() + "/submissions-with-results", HttpStatus.FORBIDDEN, Submission.class);
     }
 
     @Test
@@ -1030,7 +1027,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
         User tutor = userUtilService.getUserByLogin(TEST_PREFIX + "tutor1");
         createResult(AssessmentType.MANUAL, submission, participation, tutor);
 
-        List<Submission> submissions = request.getList("/api/modeling/participations/" + participation.getId() + "/submissions-with-results", HttpStatus.OK, Submission.class);
+        List<Submission> submissions = request.getList("/api/participations/" + participation.getId() + "/submissions-with-results", HttpStatus.OK, Submission.class);
 
         assertThat(submissions).hasSize(1);
         Submission returnedSubmission = submissions.get(0);
@@ -1055,7 +1052,7 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
 
         // When & Then
         // Attempt to get submissions for a non-modeling exercise
-        request.getList("/api/modeling/participations/" + participation.getId() + "/submissions-with-results", HttpStatus.BAD_REQUEST, Submission.class);
+        request.getList("/api/participations/" + participation.getId() + "/submissions-with-results", HttpStatus.BAD_REQUEST, Submission.class);
     }
 
     private void checkDetailsHidden(ModelingSubmission submission, boolean isStudent) {
@@ -1070,11 +1067,11 @@ class ModelingSubmissionIntegrationTest extends AbstractSpringIntegrationLocalCI
     }
 
     private ModelingSubmission performInitialModelSubmission(Long exerciseId, ModelingSubmission submission) throws Exception {
-        return request.postWithResponseBody("/api/modeling/exercises/" + exerciseId + "/modeling-submissions", submission, ModelingSubmission.class, HttpStatus.OK);
+        return request.postWithResponseBody("/api/exercises/" + exerciseId + "/modeling-submissions", submission, ModelingSubmission.class, HttpStatus.OK);
     }
 
     private ModelingSubmission performUpdateOnModelSubmission(Long exerciseId, ModelingSubmission submission) throws Exception {
-        return request.putWithResponseBody("/api/modeling/exercises/" + exerciseId + "/modeling-submissions", submission, ModelingSubmission.class, HttpStatus.OK);
+        return request.putWithResponseBody("/api/exercises/" + exerciseId + "/modeling-submissions", submission, ModelingSubmission.class, HttpStatus.OK);
     }
 
     private ModelingSubmission generateSubmittedSubmission() {

@@ -19,7 +19,7 @@ import de.tum.cit.aet.artemis.programming.service.localvc.ssh.SshFingerprintsPro
  */
 @Profile(PROFILE_LOCALVC)
 @RestController
-@RequestMapping("api/programming/")
+@RequestMapping("api/")
 public class SshFingerprintsProviderResource {
 
     SshFingerprintsProviderService sshFingerprintsProviderService;

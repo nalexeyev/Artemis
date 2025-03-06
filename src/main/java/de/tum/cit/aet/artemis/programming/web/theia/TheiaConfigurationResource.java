@@ -17,7 +17,7 @@ import de.tum.cit.aet.artemis.programming.domain.ProgrammingLanguage;
 
 @Profile(PROFILE_THEIA)
 @RestController
-@RequestMapping("api/programming/theia/")
+@RequestMapping("api/theia/")
 public class TheiaConfigurationResource {
 
     private final TheiaConfiguration theiaConfiguration;
@@ -27,7 +27,7 @@ public class TheiaConfigurationResource {
     }
 
     /**
-     * GET programming/theia/images?language=<language>: Get the images for a specific language
+     * GET /api/theia/images?language=<language>: Get the images for a specific language
      *
      * @param language the language for which the images should be retrieved
      * @return a map of flavor/name -> image-link

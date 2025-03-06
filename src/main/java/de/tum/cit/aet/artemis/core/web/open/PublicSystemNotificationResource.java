@@ -21,7 +21,7 @@ import de.tum.cit.aet.artemis.core.security.annotations.EnforceNothing;
  */
 @Profile(PROFILE_CORE)
 @RestController
-@RequestMapping("api/core/public/")
+@RequestMapping("api/public/")
 public class PublicSystemNotificationResource {
 
     private static final Logger log = LoggerFactory.getLogger(PublicSystemNotificationResource.class);

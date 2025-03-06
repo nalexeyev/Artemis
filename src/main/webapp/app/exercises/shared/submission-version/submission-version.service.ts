@@ -13,7 +13,7 @@ export type EntityArrayResponseType = HttpResponse<Submission[]>;
 export class SubmissionVersionService {
     private http = inject(HttpClient);
 
-    public resourceUrl = 'api/exercise/submissions';
+    public resourceUrl = 'api/submissions';
 
     /**
      * Find all submission versions for a given submission id.

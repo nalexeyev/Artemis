@@ -17,8 +17,6 @@ export class ExampleSubmissionService {
     private http = inject(HttpClient);
     private stringCountService = inject(StringCountService);
 
-    private resourceUrl = 'api/assessment';
-
     /**
      * Creates an example submission
      * @param exampleSubmission Example submission to create
@@ -27,7 +25,7 @@ export class ExampleSubmissionService {
     create(exampleSubmission: ExampleSubmission, exerciseId: number): Observable<EntityResponseType> {
         const copy = this.convert(exampleSubmission);
         return this.http
-            .post<ExampleSubmission>(`${this.resourceUrl}/exercises/${exerciseId}/example-submissions`, copy, {
+            .post<ExampleSubmission>(`api/exercises/${exerciseId}/example-submissions`, copy, {
                 observe: 'response',
             })
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
@@ -41,7 +39,7 @@ export class ExampleSubmissionService {
     update(exampleSubmission: ExampleSubmission, exerciseId: number): Observable<EntityResponseType> {
         const copy = this.convert(exampleSubmission);
         return this.http
-            .put<ExampleSubmission>(`${this.resourceUrl}/exercises/${exerciseId}/example-submissions`, copy, {
+            .put<ExampleSubmission>(`api/exercises/${exerciseId}/example-submissions`, copy, {
                 observe: 'response',
             })
             .pipe(map((res: EntityResponseType) => this.convertResponse(res)));
@@ -53,7 +51,7 @@ export class ExampleSubmissionService {
      * @param exampleSubmissionId Id of the example submission to prepare
      */
     prepareForAssessment(exerciseId: number, exampleSubmissionId: number): Observable<HttpResponse<void>> {
-        return this.http.post<void>(`${this.resourceUrl}/exercises/${exerciseId}/example-submissions/${exampleSubmissionId}/prepare-assessment`, {}, { observe: 'response' });
+        return this.http.post<void>(`api/exercises/${exerciseId}/example-submissions/${exampleSubmissionId}/prepare-assessment`, {}, { observe: 'response' });
     }
 
     /**
@@ -62,7 +60,7 @@ export class ExampleSubmissionService {
      */
     get(exampleSubmissionId: number): Observable<EntityResponseType> {
         return this.http
-            .get<ExampleSubmission>(`${this.resourceUrl}/example-submissions/${exampleSubmissionId}`, { observe: 'response' })
+            .get<ExampleSubmission>(`api/example-submissions/${exampleSubmissionId}`, { observe: 'response' })
             .pipe(map((res: HttpResponse<ExampleSubmission>) => this.convertResponse(res)));
     }
 
@@ -71,7 +69,7 @@ export class ExampleSubmissionService {
      * @param exampleSubmissionId Id of example submission to delete
      */
     delete(exampleSubmissionId: number): Observable<HttpResponse<void>> {
-        return this.http.delete<void>(`${this.resourceUrl}/example-submissions/${exampleSubmissionId}`, { observe: 'response' });
+        return this.http.delete<void>(`api/example-submissions/${exampleSubmissionId}`, { observe: 'response' });
     }
 
     /**
@@ -82,7 +80,7 @@ export class ExampleSubmissionService {
     import(submissionId: number, exerciseId: number): Observable<EntityResponseType> {
         return this.http
             .post<ExampleSubmission>(
-                `${this.resourceUrl}/exercises/${exerciseId}/example-submissions/import/${submissionId}`,
+                `api/exercises/${exerciseId}/example-submissions/import/${submissionId}`,
                 {},
                 {
                     observe: 'response',

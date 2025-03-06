@@ -53,7 +53,7 @@ class AttachmentResourceIntegrationTest extends AbstractSpringIntegrationIndepen
         userUtilService.addUsers(TEST_PREFIX, 0, 1, 0, 1);
 
         attachment = LectureFactory.generateAttachment(null);
-        attachment.setLink("/api/core/files/temp/example.txt");
+        attachment.setLink("/api/files/temp/example.txt");
 
         var course = textExerciseUtilService.addCourseWithOneReleasedTextExercise();
         textExercise = exerciseUtilService.getFirstExerciseWithType(course, TextExercise.class);
@@ -68,7 +68,7 @@ class AttachmentResourceIntegrationTest extends AbstractSpringIntegrationIndepen
     @Test
     @WithMockUser(username = TEST_PREFIX + "instructor1", roles = "INSTRUCTOR")
     void createAttachment() throws Exception {
-        Attachment actualAttachment = request.postWithMultipartFile("/api/lecture/attachments", attachment, "attachment",
+        Attachment actualAttachment = request.postWithMultipartFile("/api/attachments", attachment, "attachment",
                 new MockMultipartFile("file", "test.txt", MediaType.TEXT_PLAIN_VALUE, "testContent".getBytes()), Attachment.class, HttpStatus.CREATED);
         String actualLink = actualAttachment.getLink();
         assertThat(actualLink).isNotNull();
@@ -84,7 +84,7 @@ class AttachmentResourceIntegrationTest extends AbstractSpringIntegrationIndepen
     @Test
     @WithMockUser(username = TEST_PREFIX + "instructor1", roles = "INSTRUCTOR")
     void createAttachment_noFile() throws Exception {
-        request.postWithMultipartFile("/api/lecture/attachments", attachment, "attachment", null, Attachment.class, HttpStatus.BAD_REQUEST);
+        request.postWithMultipartFile("/api/attachments", attachment, "attachment", null, Attachment.class, HttpStatus.BAD_REQUEST);
     }
 
     @ParameterizedTest
@@ -98,8 +98,7 @@ class AttachmentResourceIntegrationTest extends AbstractSpringIntegrationIndepen
         params.add("notificationText", notificationText);
         MockMultipartFile file = fileUpdate ? new MockMultipartFile("file", "test.txt", MediaType.TEXT_PLAIN_VALUE, "testContent".getBytes()) : null;
 
-        var actualAttachment = request.putWithMultipartFile("/api/lecture/attachments/" + attachment.getId(), attachment, "attachment", file, Attachment.class, HttpStatus.OK,
-                params);
+        var actualAttachment = request.putWithMultipartFile("/api/attachments/" + attachment.getId(), attachment, "attachment", file, Attachment.class, HttpStatus.OK, params);
         var expectedAttachment = attachmentRepository.findById(actualAttachment.getId()).orElseThrow();
 
         assertThat(actualAttachment.getName()).isEqualTo("new name");
@@ -114,7 +113,7 @@ class AttachmentResourceIntegrationTest extends AbstractSpringIntegrationIndepen
     void getAttachment() throws Exception {
         attachment = attachmentRepository.save(attachment);
         attachment.setName("new name");
-        var actualAttachment = request.get("/api/lecture/attachments/" + attachment.getId(), HttpStatus.OK, Attachment.class);
+        var actualAttachment = request.get("/api/attachments/" + attachment.getId(), HttpStatus.OK, Attachment.class);
         assertThat(actualAttachment).isEqualTo(attachment);
     }
 
@@ -122,7 +121,7 @@ class AttachmentResourceIntegrationTest extends AbstractSpringIntegrationIndepen
     @WithMockUser(username = TEST_PREFIX + "tutor1", roles = "TA")
     void getAttachmentsForLecture() throws Exception {
         attachment = attachmentRepository.save(attachment);
-        var actualAttachments = request.getList("/api/lecture/lectures/" + lecture.getId() + "/attachments", HttpStatus.OK, Attachment.class);
+        var actualAttachments = request.getList("/api/lectures/" + lecture.getId() + "/attachments", HttpStatus.OK, Attachment.class);
         assertThat(actualAttachments).hasSize(1);
         assertThat(actualAttachments.stream().findFirst()).contains(attachment);
     }
@@ -131,7 +130,7 @@ class AttachmentResourceIntegrationTest extends AbstractSpringIntegrationIndepen
     @WithMockUser(username = TEST_PREFIX + "instructor1", roles = "INSTRUCTOR")
     void deleteAttachment() throws Exception {
         attachment = attachmentRepository.save(attachment);
-        request.delete("/api/lecture/attachments/" + attachment.getId(), HttpStatus.OK);
+        request.delete("/api/attachments/" + attachment.getId(), HttpStatus.OK);
         assertThat(attachmentRepository.findById(attachment.getId())).isEmpty();
     }
 
@@ -141,13 +140,13 @@ class AttachmentResourceIntegrationTest extends AbstractSpringIntegrationIndepen
         attachment.setLecture(null);
         attachment.setExercise(textExercise);
         attachment = attachmentRepository.save(attachment);
-        request.delete("/api/lecture/attachments/" + attachment.getId(), HttpStatus.OK);
+        request.delete("/api/attachments/" + attachment.getId(), HttpStatus.OK);
     }
 
     @Test
     @WithMockUser(username = TEST_PREFIX + "instructor1", roles = "INSTRUCTOR")
     void deleteAttachment_noAttachment() throws Exception {
-        request.delete("/api/lecture/attachments/-1", HttpStatus.NOT_FOUND);
+        request.delete("/api/attachments/-1", HttpStatus.NOT_FOUND);
     }
 
     @Test
@@ -156,7 +155,7 @@ class AttachmentResourceIntegrationTest extends AbstractSpringIntegrationIndepen
         attachment = attachmentRepository.save(attachment);
         lecture.setCourse(null);
         lectureRepository.save(lecture);
-        request.delete("/api/lecture/attachments/" + attachment.getId(), HttpStatus.BAD_REQUEST);
+        request.delete("/api/attachments/" + attachment.getId(), HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -166,6 +165,6 @@ class AttachmentResourceIntegrationTest extends AbstractSpringIntegrationIndepen
         attachment = attachmentRepository.save(attachment);
         lecture.setCourse(course);
         lectureRepository.save(lecture);
-        request.delete("/api/lecture/attachments/" + attachment.getId(), HttpStatus.FORBIDDEN);
+        request.delete("/api/attachments/" + attachment.getId(), HttpStatus.FORBIDDEN);
     }
 }

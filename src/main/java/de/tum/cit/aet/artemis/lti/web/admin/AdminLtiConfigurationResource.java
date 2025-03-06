@@ -34,7 +34,7 @@ import de.tum.cit.aet.artemis.lti.service.OAuth2JWKSService;
  */
 @RestController
 @EnforceAdmin
-@RequestMapping("api/lti/admin/")
+@RequestMapping("api/admin/")
 @Profile(PROFILE_LTI)
 public class AdminLtiConfigurationResource {
 

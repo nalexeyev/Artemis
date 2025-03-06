@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 export class PlagiarismResultsService {
     private http = inject(HttpClient);
 
-    private resourceUrlExercises = 'api/plagiarism/exercises';
+    private resourceUrlExercises = 'api/exercises';
 
     getNumberOfPlagiarismResultsForExercise(exerciseId: number): Observable<number> {
         return this.http.get<number>(`${this.resourceUrlExercises}/${exerciseId}/potential-plagiarism-count`);

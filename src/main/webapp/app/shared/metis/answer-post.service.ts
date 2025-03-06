@@ -11,7 +11,7 @@ type EntityResponseType = HttpResponse<AnswerPost>;
 export class AnswerPostService extends PostingService<AnswerPost> {
     protected http = inject(HttpClient);
 
-    public resourceUrl = 'api/communication/courses/';
+    public resourceUrl = 'api/courses/';
 
     constructor() {
         super();

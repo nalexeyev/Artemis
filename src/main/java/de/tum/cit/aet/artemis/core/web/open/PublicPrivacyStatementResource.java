@@ -21,7 +21,7 @@ import de.tum.cit.aet.artemis.core.service.LegalDocumentService;
  */
 @Profile(PROFILE_CORE)
 @RestController
-@RequestMapping("api/core/public/")
+@RequestMapping("api/public/")
 public class PublicPrivacyStatementResource {
 
     private final LegalDocumentService legalDocumentService;

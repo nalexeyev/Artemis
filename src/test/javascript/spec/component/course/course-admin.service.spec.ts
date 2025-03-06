@@ -17,7 +17,7 @@ import { provideHttpClient } from '@angular/common/http';
 describe('Course Admin Service', () => {
     let courseAdminService: CourseAdminService;
     let httpMock: HttpTestingController;
-    const resourceUrl = 'api/core/admin/courses';
+    const resourceUrl = 'api/admin/courses';
     let course: Course;
     let exercises: Exercise[];
     let returnedFromService: any;

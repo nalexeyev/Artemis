@@ -51,7 +51,7 @@ import de.tum.cit.aet.artemis.programming.service.BuildLogEntryService;
  */
 @Profile(PROFILE_CORE)
 @RestController
-@RequestMapping("api/exercise/")
+@RequestMapping("api/")
 public class SubmissionResource {
 
     private static final Logger log = LoggerFactory.getLogger(SubmissionResource.class);

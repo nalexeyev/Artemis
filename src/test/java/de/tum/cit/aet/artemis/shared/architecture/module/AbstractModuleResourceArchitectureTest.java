@@ -113,12 +113,6 @@ public abstract class AbstractModuleResourceArchitectureTest extends AbstractArc
                     if (value.startsWith("/")) {
                         conditionEvents.add(violated(javaClass, createMessage(javaClass, "The @RequestMapping path value should not start with /")));
                     }
-                    else if (getIgnoredModulePathPrefixResources().stream().noneMatch(clazz -> clazz.isAssignableFrom(javaClass.reflect()))) {
-                        String moduleName = getModulePackage().substring(getModulePackage().lastIndexOf(".") + 1);
-                        if (!value.startsWith("api/" + moduleName)) {
-                            conditionEvents.add(violated(javaClass, createMessage(javaClass, "The @RequestMapping path value should start with api/" + moduleName)));
-                        }
-                    }
                     if (!value.endsWith("/")) {
                         conditionEvents.add(violated(javaClass, createMessage(javaClass, "The @RequestMapping path value should always end with /")));
                     }
@@ -181,9 +175,5 @@ public abstract class AbstractModuleResourceArchitectureTest extends AbstractArc
         ArchRule rule = methodsOfThisModuleThat().areDeclaredInClassesThat().areAnnotatedWith(EnforceAdmin.class).should().notBeAnnotatedWith(EnforceAdmin.class).andShould()
                 .notBeMetaAnnotatedWith(PreAuthorize.class);
         rule.allowEmptyShould(true).check(productionClasses);
-    }
-
-    protected Set<Class<?>> getIgnoredModulePathPrefixResources() {
-        return Set.of();
     }
 }

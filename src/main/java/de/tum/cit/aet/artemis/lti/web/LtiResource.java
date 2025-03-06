@@ -48,7 +48,7 @@ import tech.jhipster.web.util.PaginationUtil;
  */
 @Profile(PROFILE_LTI)
 @RestController
-@RequestMapping("api/lti/")
+@RequestMapping("api/")
 public class LtiResource {
 
     private static final Logger log = LoggerFactory.getLogger(LtiResource.class);

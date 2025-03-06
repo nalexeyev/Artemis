@@ -9,7 +9,7 @@ import { Rating } from 'app/entities/rating.model';
 export class RatingService {
     private http = inject(HttpClient);
 
-    private ratingResourceUrl = 'api/assessment/results/';
+    private ratingResourceUrl = 'api/results/';
 
     /**
      * Create the student rating for feedback on the server.
@@ -42,6 +42,6 @@ export class RatingService {
      * @param courseId - Id of the course
      */
     getRatingsForDashboard(courseId: number): Observable<Rating[]> {
-        return this.http.get<Rating[]>(`api/assessment/course/${courseId}/rating`);
+        return this.http.get<Rating[]>(`api/course/${courseId}/rating`);
     }
 }

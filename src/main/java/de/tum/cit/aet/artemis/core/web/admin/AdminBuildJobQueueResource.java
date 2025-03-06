@@ -37,7 +37,7 @@ import tech.jhipster.web.util.PaginationUtil;
 @Profile(PROFILE_LOCALCI)
 @EnforceAdmin
 @RestController
-@RequestMapping("api/core/admin/")
+@RequestMapping("api/admin/")
 public class AdminBuildJobQueueResource {
 
     private final SharedQueueManagementService localCIBuildJobQueueService;

@@ -32,7 +32,7 @@ import de.tum.cit.aet.artemis.programming.service.aeolus.AeolusTemplateService;
  */
 @Profile("aeolus | localci")
 @RestController
-@RequestMapping("api/programming/aeolus/")
+@RequestMapping("api/aeolus/")
 public class AeolusTemplateResource {
 
     private static final Logger log = LoggerFactory.getLogger(AeolusTemplateResource.class);

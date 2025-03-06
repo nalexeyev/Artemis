@@ -58,8 +58,7 @@ class ApollonDiagramResourceIntegrationTest extends AbstractSpringIntegrationInd
     @WithMockUser(username = TEST_PREFIX + "tutor1", roles = "TA")
     void testCreateApollonDiagram_CREATED() throws Exception {
         apollonDiagram.setCourseId(course1.getId());
-        ApollonDiagram response = request.postWithResponseBody("/api/modeling/course/" + course1.getId() + "/apollon-diagrams", apollonDiagram, ApollonDiagram.class,
-                HttpStatus.CREATED);
+        ApollonDiagram response = request.postWithResponseBody("/api/course/" + course1.getId() + "/apollon-diagrams", apollonDiagram, ApollonDiagram.class, HttpStatus.CREATED);
         assertThat(response.getTitle()).as("title is the same").isEqualTo(apollonDiagram.getTitle());
     }
 
@@ -68,14 +67,14 @@ class ApollonDiagramResourceIntegrationTest extends AbstractSpringIntegrationInd
     void testCreateApollonDiagram_BAD_REQUEST() throws Exception {
         apollonDiagram.setCourseId(course1.getId());
         apollonDiagram.setId(1L);
-        request.post("/api/modeling/course/" + course1.getId() + "/apollon-diagrams", apollonDiagram, HttpStatus.BAD_REQUEST);
+        request.post("/api/course/" + course1.getId() + "/apollon-diagrams", apollonDiagram, HttpStatus.BAD_REQUEST);
     }
 
     @Test
     @WithMockUser(username = TEST_PREFIX + "tutor2", roles = "TA")
     void testCreateApollonDiagram_AccessForbidden() throws Exception {
         apollonDiagram.setCourseId(course1.getId());
-        request.postWithResponseBody("/api/modeling/course/" + course1.getId() + "/apollon-diagrams", apollonDiagram, ApollonDiagram.class, HttpStatus.FORBIDDEN);
+        request.postWithResponseBody("/api/course/" + course1.getId() + "/apollon-diagrams", apollonDiagram, ApollonDiagram.class, HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -85,7 +84,7 @@ class ApollonDiagramResourceIntegrationTest extends AbstractSpringIntegrationInd
         apollonDiagram.setTitle("updated title");
         apollonDiagram.setDiagramType(DiagramType.ClassDiagram);
         apollonDiagram.setCourseId(course1.getId());
-        ApollonDiagram response = request.putWithResponseBody("/api/modeling/course/" + course1.getId() + "/apollon-diagrams", apollonDiagram, ApollonDiagram.class, HttpStatus.OK);
+        ApollonDiagram response = request.putWithResponseBody("/api/course/" + course1.getId() + "/apollon-diagrams", apollonDiagram, ApollonDiagram.class, HttpStatus.OK);
 
         assertThat(response.getDiagramType()).as("diagram type updated").isEqualByComparingTo(DiagramType.ClassDiagram);
         assertThat(response.getTitle()).as("title updated").isEqualTo("updated title");
@@ -95,7 +94,7 @@ class ApollonDiagramResourceIntegrationTest extends AbstractSpringIntegrationInd
     @WithMockUser(username = TEST_PREFIX + "tutor1", roles = "TA")
     void testUpdateApollonDiagram_CREATED() throws Exception {
         apollonDiagram.setCourseId(course1.getId());
-        request.put("/api/modeling/course/" + course1.getId() + "/apollon-diagrams", apollonDiagram, HttpStatus.CREATED);
+        request.put("/api/course/" + course1.getId() + "/apollon-diagrams", apollonDiagram, HttpStatus.CREATED);
     }
 
     @Test
@@ -105,7 +104,7 @@ class ApollonDiagramResourceIntegrationTest extends AbstractSpringIntegrationInd
         apollonDiagram.setTitle("updated title");
         apollonDiagram.setDiagramType(DiagramType.ClassDiagram);
         apollonDiagram.setCourseId(course1.getId());
-        request.putWithResponseBody("/api/modeling/course/" + course1.getId() + "/apollon-diagrams", apollonDiagram, ApollonDiagram.class, HttpStatus.FORBIDDEN);
+        request.putWithResponseBody("/api/course/" + course1.getId() + "/apollon-diagrams", apollonDiagram, ApollonDiagram.class, HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -113,25 +112,25 @@ class ApollonDiagramResourceIntegrationTest extends AbstractSpringIntegrationInd
     void testGetDiagramsByCourse() throws Exception {
         apollonDiagram.setCourseId(course1.getId());
         apollonDiagramRepository.save(apollonDiagram);
-        List<ApollonDiagram> responseCourse1 = request.getList("/api/modeling/course/" + course1.getId() + "/apollon-diagrams", HttpStatus.OK, ApollonDiagram.class);
+        List<ApollonDiagram> responseCourse1 = request.getList("/api/course/" + course1.getId() + "/apollon-diagrams", HttpStatus.OK, ApollonDiagram.class);
         assertThat(responseCourse1).as("response is not empty").isNotEmpty();
         assertThat(responseCourse1).as("response has length 1 ").hasSize(1);
 
         ApollonDiagram newDiagramCourse1 = ModelingExerciseFactory.generateApollonDiagram(DiagramType.ClassDiagram, "new title");
         newDiagramCourse1.setCourseId(course1.getId());
         apollonDiagramRepository.save(newDiagramCourse1);
-        List<ApollonDiagram> updatedResponseCourse1 = request.getList("/api/modeling/course/" + course1.getId() + "/apollon-diagrams", HttpStatus.OK, ApollonDiagram.class);
+        List<ApollonDiagram> updatedResponseCourse1 = request.getList("/api/course/" + course1.getId() + "/apollon-diagrams", HttpStatus.OK, ApollonDiagram.class);
         assertThat(updatedResponseCourse1).as("updated response is not empty").isNotEmpty();
         assertThat(updatedResponseCourse1).as("updated response has length 2").hasSize(2);
 
         ApollonDiagram newDiagramCourse2 = ModelingExerciseFactory.generateApollonDiagram(DiagramType.ClassDiagram, "newer title");
         newDiagramCourse2.setCourseId(course2.getId());
         apollonDiagramRepository.save(newDiagramCourse2);
-        updatedResponseCourse1 = request.getList("/api/modeling/course/" + course1.getId() + "/apollon-diagrams", HttpStatus.OK, ApollonDiagram.class);
+        updatedResponseCourse1 = request.getList("/api/course/" + course1.getId() + "/apollon-diagrams", HttpStatus.OK, ApollonDiagram.class);
         assertThat(updatedResponseCourse1).as("updated response is not empty").isNotEmpty();
         assertThat(updatedResponseCourse1).as("updated response has length 2").hasSize(2);
 
-        List<ApollonDiagram> responseCourse2 = request.getList("/api/modeling/course/" + course2.getId() + "/apollon-diagrams", HttpStatus.OK, ApollonDiagram.class);
+        List<ApollonDiagram> responseCourse2 = request.getList("/api/course/" + course2.getId() + "/apollon-diagrams", HttpStatus.OK, ApollonDiagram.class);
         assertThat(responseCourse2).as("updated response is not empty").isNotEmpty();
         assertThat(responseCourse2).as("updated response has length 1").hasSize(1);
     }
@@ -141,8 +140,8 @@ class ApollonDiagramResourceIntegrationTest extends AbstractSpringIntegrationInd
     void testGetDiagramsByCourse_AccessForbidden() throws Exception {
         apollonDiagram.setCourseId(course1.getId());
         apollonDiagramRepository.save(apollonDiagram);
-        request.get("/api/modeling/course/" + course1.getId() + "/apollon-diagrams", HttpStatus.FORBIDDEN, List.class);
-        request.get("/api/modeling/course/" + course2.getId() + "/apollon-diagrams", HttpStatus.FORBIDDEN, List.class);
+        request.get("/api/course/" + course1.getId() + "/apollon-diagrams", HttpStatus.FORBIDDEN, List.class);
+        request.get("/api/course/" + course2.getId() + "/apollon-diagrams", HttpStatus.FORBIDDEN, List.class);
     }
 
     @Test
@@ -151,9 +150,9 @@ class ApollonDiagramResourceIntegrationTest extends AbstractSpringIntegrationInd
         apollonDiagram.setCourseId(course1.getId());
         ApollonDiagram savedDiagram = apollonDiagramRepository.save(apollonDiagram);
 
-        ApollonDiagram response = request.get("/api/modeling/course/" + course1.getId() + "/apollon-diagrams/" + savedDiagram.getId(), HttpStatus.OK, ApollonDiagram.class);
+        ApollonDiagram response = request.get("/api/course/" + course1.getId() + "/apollon-diagrams/" + savedDiagram.getId(), HttpStatus.OK, ApollonDiagram.class);
         assertThat(response).as("response is not null").isNotNull();
-        request.get("/api/modeling/course/" + course1.getId() + "/apollon-diagrams/" + apollonDiagram.getId() + 1, HttpStatus.NOT_FOUND, ApollonDiagram.class);
+        request.get("/api/course/" + course1.getId() + "/apollon-diagrams/" + apollonDiagram.getId() + 1, HttpStatus.NOT_FOUND, ApollonDiagram.class);
     }
 
     @Test
@@ -162,7 +161,7 @@ class ApollonDiagramResourceIntegrationTest extends AbstractSpringIntegrationInd
         apollonDiagram.setCourseId(course1.getId());
         ApollonDiagram savedDiagram = apollonDiagramRepository.save(apollonDiagram);
 
-        request.get("/api/modeling/course/" + course1.getId() + "/apollon-diagrams/" + savedDiagram.getId(), HttpStatus.FORBIDDEN, ApollonDiagram.class);
+        request.get("/api/course/" + course1.getId() + "/apollon-diagrams/" + savedDiagram.getId(), HttpStatus.FORBIDDEN, ApollonDiagram.class);
     }
 
     @Test
@@ -170,7 +169,7 @@ class ApollonDiagramResourceIntegrationTest extends AbstractSpringIntegrationInd
     void testDeleteApollonDiagram() throws Exception {
         apollonDiagram.setCourseId(course1.getId());
         ApollonDiagram savedDiagram = apollonDiagramRepository.save(apollonDiagram);
-        request.delete("/api/modeling/course/" + course1.getId() + "/apollon-diagrams/" + savedDiagram.getId(), HttpStatus.OK);
+        request.delete("/api/course/" + course1.getId() + "/apollon-diagrams/" + savedDiagram.getId(), HttpStatus.OK);
         assertThat(apollonDiagramRepository.findDiagramsByCourseId(course1.getId())).as("repository is empty").isEmpty();
     }
 
@@ -179,7 +178,7 @@ class ApollonDiagramResourceIntegrationTest extends AbstractSpringIntegrationInd
     void testDeleteApollonDiagram_AccessForbidden() throws Exception {
         apollonDiagram.setCourseId(course1.getId());
         ApollonDiagram savedDiagram = apollonDiagramRepository.save(apollonDiagram);
-        request.delete("/api/modeling/course/" + course1.getId() + "/apollon-diagrams/" + savedDiagram.getId(), HttpStatus.FORBIDDEN);
+        request.delete("/api/course/" + course1.getId() + "/apollon-diagrams/" + savedDiagram.getId(), HttpStatus.FORBIDDEN);
     }
 
     @Test
@@ -204,13 +203,13 @@ class ApollonDiagramResourceIntegrationTest extends AbstractSpringIntegrationInd
         apollonDiagram.setCourseId(course1.getId());
         ApollonDiagram savedDiagram = apollonDiagramRepository.save(apollonDiagram);
 
-        final var title = request.get("/api/modeling/apollon-diagrams/" + savedDiagram.getId() + "/title", HttpStatus.OK, String.class);
+        final var title = request.get("/api/apollon-diagrams/" + savedDiagram.getId() + "/title", HttpStatus.OK, String.class);
         assertThat(title).isEqualTo(apollonDiagram.getTitle());
     }
 
     @Test
     @WithMockUser(username = TEST_PREFIX + "user1", roles = "USER")
     void testGetDiagramTitleForNonExistingDiagram() throws Exception {
-        request.get("/api/modeling/apollon-diagrams/12312312412/title", HttpStatus.NOT_FOUND, String.class);
+        request.get("/api/apollon-diagrams/12312312412/title", HttpStatus.NOT_FOUND, String.class);
     }
 }

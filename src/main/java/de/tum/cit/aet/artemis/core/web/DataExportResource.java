@@ -40,7 +40,7 @@ import de.tum.cit.aet.artemis.core.service.export.DataExportService;
  */
 @Profile(PROFILE_CORE)
 @RestController
-@RequestMapping("api/core/")
+@RequestMapping("api/")
 public class DataExportResource {
 
     private final int DAYS_BETWEEN_DATA_EXPORTS;

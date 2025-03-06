@@ -25,7 +25,7 @@ export class ExerciseScoresDTO {
 export class ExerciseScoresChartService {
     private http = inject(HttpClient);
 
-    public resourceUrl = 'api/exercise';
+    public resourceUrl = 'api';
 
     /**
      * Get the course exercise performance statistics necessary for exercise-scores-chart.component.ts

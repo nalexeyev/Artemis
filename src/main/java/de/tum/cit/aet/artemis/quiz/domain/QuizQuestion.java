@@ -69,7 +69,7 @@ public abstract class QuizQuestion extends DomainObject {
 
     @Column(name = "points")
     @JsonView(QuizView.Before.class)
-    private double points;
+    private Integer points;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "scoring_type")
@@ -141,16 +141,16 @@ public abstract class QuizQuestion extends DomainObject {
         this.explanation = explanation;
     }
 
-    public double getPoints() {
+    public Integer getPoints() {
         return points;
     }
 
-    public QuizQuestion score(double score) {
+    public QuizQuestion score(Integer score) {
         this.points = score;
         return this;
     }
 
-    public void setPoints(double score) {
+    public void setPoints(Integer score) {
         this.points = score;
     }
 
@@ -257,7 +257,7 @@ public abstract class QuizQuestion extends DomainObject {
     @JsonIgnore
     public Boolean isValid() {
         // check title and score
-        return getTitle() != null && !getTitle().isEmpty() && Double.compare(getPoints(), 0.0) > 0;
+        return getTitle() != null && !getTitle().isEmpty() && getPoints() >= 1;
     }
 
     /**

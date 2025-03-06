@@ -65,7 +65,7 @@ const DEFAULT_CHANNEL_GROUPS: AccordionGroups = {
     lectureChannels: { entityData: [] },
     examChannels: { entityData: [] },
     feedbackDiscussion: { entityData: [] },
-    archivedChannels: { entityData: [] },
+    hiddenChannels: { entityData: [] },
 };
 
 @Injectable({
@@ -174,7 +174,7 @@ export class CourseOverviewService {
         const groups: ChannelGroupCategory[] = [];
 
         if (conversation.isHidden) {
-            groups.push('archivedChannels');
+            groups.push('hiddenChannels');
             return groups;
         }
 

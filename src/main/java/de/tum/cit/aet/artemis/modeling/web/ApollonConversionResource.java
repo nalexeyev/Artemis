@@ -24,7 +24,7 @@ import de.tum.cit.aet.artemis.modeling.service.apollon.ApollonConversionService;
  */
 @Profile(PROFILE_APOLLON)
 @RestController
-@RequestMapping("api/modeling/")
+@RequestMapping("api/")
 public class ApollonConversionResource {
 
     private static final Logger log = LoggerFactory.getLogger(ApollonConversionResource.class);

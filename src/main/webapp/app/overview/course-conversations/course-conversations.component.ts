@@ -3,8 +3,8 @@ import { ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, O
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
+    faBan,
     faBookmark,
-    faBoxArchive,
     faClock,
     faComment,
     faComments,
@@ -67,7 +67,7 @@ const DEFAULT_CHANNEL_GROUPS: AccordionGroups = {
     lectureChannels: { entityData: [] },
     examChannels: { entityData: [] },
     feedbackDiscussion: { entityData: [] },
-    archivedChannels: { entityData: [] },
+    hiddenChannels: { entityData: [] },
     savedPosts: { entityData: [] },
 };
 
@@ -79,7 +79,7 @@ const CHANNEL_TYPE_ICON: ChannelTypeIcons = {
     directMessages: faComment,
     favoriteChannels: faHeart,
     lectureChannels: faFile,
-    archivedChannels: faBoxArchive,
+    hiddenChannels: faBan,
     feedbackDiscussion: faPersonChalkboard,
     savedPosts: faBookmark,
     recents: faClock,
@@ -93,7 +93,7 @@ const DEFAULT_COLLAPSE_STATE: CollapseState = {
     directMessages: true,
     favoriteChannels: false,
     lectureChannels: true,
-    archivedChannels: true,
+    hiddenChannels: true,
     feedbackDiscussion: true,
     savedPosts: true,
     recents: true,
@@ -107,7 +107,7 @@ const DEFAULT_SHOW_ALWAYS: SidebarItemShowAlways = {
     directMessages: true,
     favoriteChannels: true,
     lectureChannels: false,
-    archivedChannels: false,
+    hiddenChannels: false,
     feedbackDiscussion: false,
     savedPosts: true,
     recents: true,

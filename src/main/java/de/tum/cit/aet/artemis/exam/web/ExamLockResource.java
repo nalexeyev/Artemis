@@ -16,7 +16,7 @@ import de.tum.cit.aet.artemis.exam.service.ExamService;
 // only available for external version control services
 @Profile("!localvc & core")
 @RestController
-@RequestMapping("api/exam/")
+@RequestMapping("api/")
 public class ExamLockResource {
 
     private static final Logger log = LoggerFactory.getLogger(ExamLockResource.class);

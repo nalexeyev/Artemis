@@ -114,7 +114,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
 
     @Override
     CourseCompetency getCall(long courseId, long competencyId, HttpStatus expectedStatus) throws Exception {
-        return request.get("/api/atlas/courses/" + courseId + "/course-competencies/" + competencyId, expectedStatus, CourseCompetency.class);
+        return request.get("/api/courses/" + courseId + "/course-competencies/" + competencyId, expectedStatus, CourseCompetency.class);
     }
 
     @Test
@@ -143,7 +143,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
 
     @Override
     List<? extends CourseCompetency> getAllCall(long courseId, HttpStatus expectedStatus) throws Exception {
-        return request.getList("/api/atlas/courses/" + courseId + "/course-competencies", expectedStatus, CourseCompetency.class);
+        return request.getList("/api/courses/" + courseId + "/course-competencies", expectedStatus, CourseCompetency.class);
     }
 
     @Test
@@ -154,7 +154,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
 
     @Override
     List<? extends CourseCompetency> getAllFilteredCall(long courseId, HttpStatus expectedStatus) throws Exception {
-        return request.getList("/api/atlas/courses/" + courseId + "/course-competencies?filter=true", expectedStatus, CourseCompetency.class);
+        return request.getList("/api/courses/" + courseId + "/course-competencies?filter=true", expectedStatus, CourseCompetency.class);
     }
 
     @Test
@@ -196,8 +196,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
 
     @Override
     List<CompetencyWithTailRelationDTO> importAllCall(long courseId, CompetencyImportOptionsDTO importOptions, HttpStatus expectedStatus) throws Exception {
-        return request.postListWithResponseBody("/api/atlas/courses/" + courseId + "/course-competencies/import-all", importOptions, CompetencyWithTailRelationDTO.class,
-                expectedStatus);
+        return request.postListWithResponseBody("/api/courses/" + courseId + "/course-competencies/import-all", importOptions, CompetencyWithTailRelationDTO.class, expectedStatus);
     }
 
     @Test
@@ -263,8 +262,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
             await().until(() -> participantScoreScheduleService.isIdle());
 
             CourseCompetencyProgressDTO courseCompetencyProgress = request.get(
-                    "/api/atlas/courses/" + course.getId() + "/course-competencies/" + courseCompetency.getId() + "/course-progress", HttpStatus.OK,
-                    CourseCompetencyProgressDTO.class);
+                    "/api/courses/" + course.getId() + "/course-competencies/" + courseCompetency.getId() + "/course-progress", HttpStatus.OK, CourseCompetencyProgressDTO.class);
 
             assertThat(courseCompetencyProgress.averageStudentScore()).isEqualTo(30);
         }
@@ -285,8 +283,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
             await().until(() -> participantScoreScheduleService.isIdle());
 
             CourseCompetencyProgressDTO courseCompetencyProgress = request.get(
-                    "/api/atlas/courses/" + course.getId() + "/course-competencies/" + courseCompetency.getId() + "/course-progress", HttpStatus.OK,
-                    CourseCompetencyProgressDTO.class);
+                    "/api/courses/" + course.getId() + "/course-competencies/" + courseCompetency.getId() + "/course-progress", HttpStatus.OK, CourseCompetencyProgressDTO.class);
 
             assertThat(courseCompetencyProgress.averageStudentScore()).isEqualTo(53.3);
         }
@@ -314,7 +311,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
             await().until(() -> participantScoreScheduleService.isIdle());
 
             CompetencyProgress studentCompetencyProgress1 = request.get(
-                    "/api/atlas/courses/" + course.getId() + "/course-competencies/" + courseCompetency.getId() + "/student-progress?refresh=true", HttpStatus.OK,
+                    "/api/courses/" + course.getId() + "/course-competencies/" + courseCompetency.getId() + "/student-progress?refresh=true", HttpStatus.OK,
                     CompetencyProgress.class);
 
             assertThat(studentCompetencyProgress1.getProgress()).isEqualTo(22);
@@ -323,7 +320,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
             lectureUnitService.setLectureUnitCompletion(attachmentUnitRepository.findById(attachmentUnitOfLectureOne.getId()).orElseThrow(), student1, true);
 
             CompetencyProgress studentCompetencyProgress2 = request.get(
-                    "/api/atlas/courses/" + course.getId() + "/course-competencies/" + courseCompetency.getId() + "/student-progress?refresh=false", HttpStatus.OK,
+                    "/api/courses/" + course.getId() + "/course-competencies/" + courseCompetency.getId() + "/student-progress?refresh=false", HttpStatus.OK,
                     CompetencyProgress.class);
 
             assertThat(studentCompetencyProgress2.getProgress()).isEqualTo(22);
@@ -349,7 +346,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
             studentScoreUtilService.createStudentScore(programmingExercises[2], student1, programming3Result);
 
             CompetencyProgress studentCompetencyProgress = request.get(
-                    "/api/atlas/courses/" + course.getId() + "/course-competencies/" + courseCompetency.getId() + "/student-progress?refresh=true", HttpStatus.OK,
+                    "/api/courses/" + course.getId() + "/course-competencies/" + courseCompetency.getId() + "/student-progress?refresh=true", HttpStatus.OK,
                     CompetencyProgress.class);
 
             // No lecture units are completed and no participation in team exercise
@@ -367,8 +364,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
         void shouldNotGetCompetenciesForInstructorOfOtherCourse() throws Exception {
             // configure search so all competencies would get returned
             final var search = pageableSearchUtilService.configureCompetencySearch("", "", "", "");
-            var result = request.getSearchResult("/api/atlas/course-competencies/for-import", HttpStatus.OK, CourseCompetency.class,
-                    pageableSearchUtilService.searchMapping(search));
+            var result = request.getSearchResult("/api/course-competencies/for-import", HttpStatus.OK, CourseCompetency.class, pageableSearchUtilService.searchMapping(search));
             assertThat(result.getResultsOnPage()).isEmpty();
         }
 
@@ -376,8 +372,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
         @WithMockUser(username = TEST_PREFIX + "instructor1", roles = "INSTRUCTOR")
         void shouldGetCompetenciesFromOwnCourses() throws Exception {
             final var search = pageableSearchUtilService.configureCompetencySearch(courseCompetency.getTitle(), "", course.getTitle(), "");
-            var result = request.getSearchResult("/api/atlas/course-competencies/for-import", HttpStatus.OK, CourseCompetency.class,
-                    pageableSearchUtilService.searchMapping(search));
+            var result = request.getSearchResult("/api/course-competencies/for-import", HttpStatus.OK, CourseCompetency.class, pageableSearchUtilService.searchMapping(search));
             assertThat(result.getResultsOnPage()).hasSize(1);
         }
 
@@ -385,7 +380,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
         @WithMockUser(username = "admin", roles = "ADMIN")
         void shouldGetCompetenciesAsAdmin() throws Exception {
             final var search = pageableSearchUtilService.configureCompetencySearch(courseCompetency.getTitle(), "", course.getTitle(), "");
-            final var result = request.getSearchResult("/api/atlas/course-competencies/for-import", HttpStatus.OK, CourseCompetency.class,
+            final var result = request.getSearchResult("/api/course-competencies/for-import", HttpStatus.OK, CourseCompetency.class,
                     pageableSearchUtilService.searchMapping(search));
             assertThat(result.getResultsOnPage()).hasSize(1);
         }
@@ -397,14 +392,14 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
         @Test
         @WithMockUser(username = TEST_PREFIX + "student1", roles = "USER")
         void shouldReturnCompetencyTitleWhenCompetencyExists() throws Exception {
-            String title = request.get("/api/atlas/course-competencies/" + courseCompetency.getId() + "/title", HttpStatus.OK, String.class);
+            String title = request.get("/api/course-competencies/" + courseCompetency.getId() + "/title", HttpStatus.OK, String.class);
             assertThat(title).isEqualTo(courseCompetency.getTitle());
         }
 
         @Test
         @WithMockUser(username = TEST_PREFIX + "student1", roles = "USER")
         void shouldReturnNotFoundWhenCompetencyNotExists() throws Exception {
-            request.get("/api/atlas/course-competencies/12312321321/title", HttpStatus.NOT_FOUND, String.class);
+            request.get("/api/course-competencies/12312321321/title", HttpStatus.NOT_FOUND, String.class);
         }
     }
 
@@ -420,7 +415,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
             var prerequisiteTitles = prerequisiteRepository.findAllByCourseIdOrderById(course.getId()).stream().map(CourseCompetency::getTitle).toList();
             var expectedTitles = Stream.concat(competencyTitles.stream(), prerequisiteTitles.stream()).toList();
 
-            final var actualTitles = request.getList("/api/atlas/courses/" + course.getId() + "/course-competencies/titles", HttpStatus.OK, String.class);
+            final var actualTitles = request.getList("/api/courses/" + course.getId() + "/course-competencies/titles", HttpStatus.OK, String.class);
 
             assertThat(actualTitles).containsAll(expectedTitles);
         }
@@ -438,8 +433,8 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
             relationToCreate.setHeadCompetency(headCompetency);
             relationToCreate.setType(RelationType.EXTENDS);
 
-            request.postWithResponseBody("/api/atlas/courses/" + course.getId() + "/course-competencies/relations", CompetencyRelationDTO.of(relationToCreate),
-                    CompetencyRelation.class, HttpStatus.OK);
+            request.postWithResponseBody("/api/courses/" + course.getId() + "/course-competencies/relations", CompetencyRelationDTO.of(relationToCreate), CompetencyRelation.class,
+                    HttpStatus.OK);
 
             var relations = competencyRelationRepository.findAllWithHeadAndTailByCourseId(course.getId());
             assertThat(relations).hasSize(1);
@@ -456,13 +451,13 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
             relationHeadNotPers.setHeadCompetency(notPersCompetency);
             relationHeadNotPers.setTailCompetency(persistedCompetency);
 
-            request.post("/api/atlas/courses/" + course.getId() + "/course-competencies/relations/", relationHeadNotPers, HttpStatus.NOT_FOUND);
+            request.post("/api/courses/" + course.getId() + "/course-competencies/relations/", relationHeadNotPers, HttpStatus.NOT_FOUND);
 
             var relationTailNotPers = new CompetencyRelation();
             relationTailNotPers.setHeadCompetency(persistedCompetency);
             relationTailNotPers.setTailCompetency(notPersCompetency);
 
-            request.post("/api/atlas/courses/" + course.getId() + "/course-competencies/relations/", relationTailNotPers, HttpStatus.NOT_FOUND);
+            request.post("/api/courses/" + course.getId() + "/course-competencies/relations/", relationTailNotPers, HttpStatus.NOT_FOUND);
         }
 
         @Test
@@ -475,7 +470,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
             // relation type must be set
             relationToCreate.setType(null);
 
-            request.post("/api/atlas/courses/" + course.getId() + "/course-competencies/relations", CompetencyRelationDTO.of(relationToCreate), HttpStatus.BAD_REQUEST);
+            request.post("/api/courses/" + course.getId() + "/course-competencies/relations", CompetencyRelationDTO.of(relationToCreate), HttpStatus.BAD_REQUEST);
         }
 
         @Test
@@ -492,7 +487,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
             relation.setHeadCompetency(courseCompetency);
             relation.setType(RelationType.ASSUMES);
 
-            request.post("/api/atlas/courses/" + course.getId() + "/course-competencies/relations", CompetencyRelationDTO.of(relation), HttpStatus.BAD_REQUEST);
+            request.post("/api/courses/" + course.getId() + "/course-competencies/relations", CompetencyRelationDTO.of(relation), HttpStatus.BAD_REQUEST);
         }
 
         @Test
@@ -504,16 +499,16 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
             relationToCreate.setHeadCompetency(headCompetency);
             relationToCreate.setType(RelationType.EXTENDS);
 
-            request.postWithResponseBody("/api/atlas/courses/" + course.getId() + "/course-competencies/relations", CompetencyRelationDTO.of(relationToCreate),
-                    CompetencyRelation.class, HttpStatus.OK);
+            request.postWithResponseBody("/api/courses/" + course.getId() + "/course-competencies/relations", CompetencyRelationDTO.of(relationToCreate), CompetencyRelation.class,
+                    HttpStatus.OK);
 
             var relations = competencyRelationRepository.findAllWithHeadAndTailByCourseId(course.getId());
             assertThat(relations).hasSize(1);
             var relation = relations.stream().findFirst().get();
             assertThat(relation.getType()).isEqualTo(RelationType.EXTENDS);
 
-            request.patch("/api/atlas/courses/" + course.getId() + "/course-competencies/relations/" + relation.getId(),
-                    new UpdateCourseCompetencyRelationDTO(RelationType.MATCHES), HttpStatus.NO_CONTENT);
+            request.patch("/api/courses/" + course.getId() + "/course-competencies/relations/" + relation.getId(), new UpdateCourseCompetencyRelationDTO(RelationType.MATCHES),
+                    HttpStatus.NO_CONTENT);
 
             relations = competencyRelationRepository.findAllWithHeadAndTailByCourseId(course.getId());
             assertThat(relations).hasSize(1);
@@ -532,7 +527,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
         var expectedRelations = Set.of(new CompetencyRelationDTO(relation.getId(), relation.getTailCompetency().getId(), relation.getHeadCompetency().getId(), relation.getType()),
                 new CompetencyRelationDTO(relation2.getId(), relation2.getTailCompetency().getId(), relation2.getHeadCompetency().getId(), relation2.getType()));
 
-        var actualRelations = request.getSet("/api/atlas/courses/" + course.getId() + "/course-competencies/relations", HttpStatus.OK, CompetencyRelationDTO.class);
+        var actualRelations = request.getSet("/api/courses/" + course.getId() + "/course-competencies/relations", HttpStatus.OK, CompetencyRelationDTO.class);
 
         assertThat(actualRelations).hasSize(2);
         assertThat(actualRelations).isEqualTo(expectedRelations);
@@ -545,7 +540,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
 
         var relation = createRelation(courseCompetency, competency2, RelationType.EXTENDS);
 
-        request.delete("/api/atlas/courses/" + course.getId() + "/course-competencies/relations/" + relation.getId(), HttpStatus.OK);
+        request.delete("/api/courses/" + course.getId() + "/course-competencies/relations/" + relation.getId(), HttpStatus.OK);
 
         var relations = competencyRelationRepository.findAllWithHeadAndTailByCourseId(course.getId());
         assertThat(relations).isEmpty();
@@ -555,7 +550,7 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
     class PreAuthorize {
 
         private void testAllPreAuthorizeEditor() throws Exception {
-            request.get("/api/atlas/course-competencies/for-import", HttpStatus.FORBIDDEN, SearchResultPageDTO.class);
+            request.get("/api/course-competencies/for-import", HttpStatus.FORBIDDEN, SearchResultPageDTO.class);
         }
 
         private void testAllPreAuthorizeInstructor() throws Exception {
@@ -564,9 +559,9 @@ class CourseCompetencyIntegrationTest extends AbstractCompetencyPrerequisiteInte
             relation.setHeadCompetency(courseCompetency);
             relation.setTailCompetency(courseCompetency);
             relation.setType(RelationType.EXTENDS);
-            request.post("/api/atlas/courses/" + course.getId() + "/course-competencies/relations", CompetencyRelationDTO.of(relation), HttpStatus.FORBIDDEN);
-            request.getSet("/api/atlas/courses/" + course.getId() + "/course-competencies/relations", HttpStatus.FORBIDDEN, CompetencyRelationDTO.class);
-            request.delete("/api/atlas/courses/" + course.getId() + "/course-competencies/relations/1", HttpStatus.FORBIDDEN);
+            request.post("/api/courses/" + course.getId() + "/course-competencies/relations", CompetencyRelationDTO.of(relation), HttpStatus.FORBIDDEN);
+            request.getSet("/api/courses/" + course.getId() + "/course-competencies/relations", HttpStatus.FORBIDDEN, CompetencyRelationDTO.class);
+            request.delete("/api/courses/" + course.getId() + "/course-competencies/relations/1", HttpStatus.FORBIDDEN);
         }
 
         @Test

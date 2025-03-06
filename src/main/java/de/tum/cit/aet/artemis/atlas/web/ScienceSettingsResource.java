@@ -34,7 +34,7 @@ import de.tum.cit.aet.artemis.core.util.HeaderUtil;
 
 @Profile(PROFILE_ATLAS)
 @RestController
-@RequestMapping("api/atlas/")
+@RequestMapping("api/")
 public class ScienceSettingsResource {
 
     private static final Logger log = LoggerFactory.getLogger(ScienceSettingsResource.class);

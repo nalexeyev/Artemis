@@ -42,7 +42,7 @@ import de.tum.cit.aet.artemis.core.util.TimeLogUtil;
  */
 @Profile(PROFILE_CORE)
 @RestController
-@RequestMapping("api/communication/")
+@RequestMapping("api/")
 public class SavedPostResource {
 
     private static final Logger log = LoggerFactory.getLogger(SavedPostResource.class);

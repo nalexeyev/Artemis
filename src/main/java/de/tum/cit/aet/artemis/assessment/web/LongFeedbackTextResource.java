@@ -21,7 +21,7 @@ import de.tum.cit.aet.artemis.exercise.service.ParticipationAuthorizationCheckSe
 
 @Profile(PROFILE_CORE)
 @RestController
-@RequestMapping("api/assessment/")
+@RequestMapping("api/")
 public class LongFeedbackTextResource {
 
     private static final Logger log = LoggerFactory.getLogger(LongFeedbackTextResource.class);

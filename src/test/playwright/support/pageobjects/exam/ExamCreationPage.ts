@@ -2,6 +2,7 @@ import { Page } from '@playwright/test';
 import dayjs from 'dayjs';
 
 import { clearTextField, enterDate } from '../../utils';
+import { COURSE_BASE } from '../../constants';
 
 /**
  * A class which encapsulates UI selectors and actions for the exam creation page.
@@ -134,7 +135,7 @@ export class ExamCreationPage {
      * @returns Response object.
      */
     async submit() {
-        const responsePromise = this.page.waitForResponse(`api/exam/courses/*/exams`);
+        const responsePromise = this.page.waitForResponse(`${COURSE_BASE}/*/exams`);
         await this.page.locator('#save-exam').click();
         return await responsePromise;
     }
@@ -144,7 +145,7 @@ export class ExamCreationPage {
      * @returns Response object.
      */
     async update() {
-        const responsePromise = this.page.waitForResponse(`api/exam/courses/*/exams`);
+        const responsePromise = this.page.waitForResponse(`${COURSE_BASE}/*/exams`);
         await this.page.locator('#save-exam').click();
         return await responsePromise;
     }

@@ -25,7 +25,7 @@ import de.tum.cit.aet.artemis.core.security.annotations.EnforceAdmin;
 @Profile(PROFILE_CORE)
 @EnforceAdmin
 @RestController
-@RequestMapping("api/core/admin/")
+@RequestMapping("api/admin/")
 public class AdminLogResource {
 
     /**

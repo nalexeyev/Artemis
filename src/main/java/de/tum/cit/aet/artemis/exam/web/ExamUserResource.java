@@ -39,7 +39,7 @@ import de.tum.cit.aet.artemis.exam.service.ExamUserService;
  */
 @Profile(PROFILE_CORE)
 @RestController
-@RequestMapping("api/exam/")
+@RequestMapping("api/")
 public class ExamUserResource {
 
     private static final Logger log = LoggerFactory.getLogger(ExamUserResource.class);

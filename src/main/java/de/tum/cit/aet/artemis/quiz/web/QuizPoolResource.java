@@ -29,7 +29,7 @@ import de.tum.cit.aet.artemis.quiz.service.QuizPoolService;
  */
 @Profile(PROFILE_CORE)
 @RestController
-@RequestMapping("api/quiz/")
+@RequestMapping("api/")
 public class QuizPoolResource {
 
     private static final String ENTITY_NAME = "quizPool";

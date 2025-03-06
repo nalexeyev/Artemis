@@ -12,7 +12,7 @@ export class ProgrammingAssessmentManualResultService {
     private http = inject(HttpClient);
     private resultService = inject(ResultService);
 
-    private resourceUrl = 'api/programming';
+    private resourceUrl = 'api';
 
     // TODO: It would be good to refactor the convertDate methods into a separate service, so that we don't have to import the result service here.
 

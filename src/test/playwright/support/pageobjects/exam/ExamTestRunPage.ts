@@ -4,6 +4,7 @@ import { Exam } from 'app/entities/exam/exam.model';
 import { UserCredentials } from '../../users';
 import { Commands } from '../../commands';
 import { ExamStartEndPage } from './ExamStartEndPage';
+import { COURSE_BASE } from '../../constants';
 
 export class ExamTestRunPage {
     private readonly page: Page;
@@ -15,7 +16,7 @@ export class ExamTestRunPage {
     }
 
     async confirmTestRun() {
-        const responsePromise = this.page.waitForResponse(`api/exam/courses/*/exams/*/test-run`);
+        const responsePromise = this.page.waitForResponse(`${COURSE_BASE}/*/exams/*/test-run`);
         await this.page.locator('.modal-dialog').locator('#createTestRunButton').click();
         return await responsePromise;
     }
@@ -33,7 +34,7 @@ export class ExamTestRunPage {
     }
 
     async saveTestRun() {
-        const responsePromise = this.page.waitForResponse(`api/exam/courses/*/exams/*/student-exams/*/working-time`);
+        const responsePromise = this.page.waitForResponse(`${COURSE_BASE}/*/exams/*/student-exams/*/working-time`);
         await this.page.locator('#save').click();
         return await responsePromise;
     }
@@ -96,7 +97,7 @@ export class ExamTestRunPage {
     async deleteTestRun(testRunId: number) {
         await this.page.locator(`#testrun-${testRunId}`).locator('.delete-testrun').click();
         await this.page.locator('#confirm-entity-name').fill('Test Run');
-        const responsePromise = this.page.waitForResponse(`api/exam/courses/*/exams/*/test-run/*`);
+        const responsePromise = this.page.waitForResponse(`${COURSE_BASE}/*/exams/*/test-run/*`);
         await this.page.locator('#delete').click();
         await responsePromise;
     }
@@ -104,7 +105,7 @@ export class ExamTestRunPage {
     async deleteTestExamTestRun() {
         await this.page.locator('svg.svg-inline--fa.fa-xmark').nth(1).click();
         await this.page.locator('#confirm-entity-name').fill('Test Run');
-        const responsePromise = this.page.waitForResponse(`api/exam/courses/*/exams/*/test-run/*`);
+        const responsePromise = this.page.waitForResponse(`${COURSE_BASE}/*/exams/*/test-run/*`);
         await this.page.locator('#delete').click();
         await responsePromise;
     }

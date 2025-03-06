@@ -27,7 +27,7 @@ import de.tum.cit.aet.artemis.programming.service.ProgrammingExerciseTaskService
  */
 @Profile(PROFILE_CORE)
 @RestController
-@RequestMapping("api/programming/")
+@RequestMapping("api/")
 public class ProgrammingExerciseTaskResource {
 
     private static final Logger log = LoggerFactory.getLogger(ProgrammingExerciseTaskResource.class);

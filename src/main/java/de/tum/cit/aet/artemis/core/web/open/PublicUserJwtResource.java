@@ -45,7 +45,7 @@ import de.tum.cit.aet.artemis.core.service.connectors.SAML2Service;
  */
 @Profile(PROFILE_CORE)
 @RestController
-@RequestMapping("api/core/public/")
+@RequestMapping("api/public/")
 public class PublicUserJwtResource {
 
     private static final Logger log = LoggerFactory.getLogger(PublicUserJwtResource.class);

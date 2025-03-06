@@ -40,7 +40,7 @@ import tech.jhipster.web.util.PaginationUtil;
 
 @Profile(PROFILE_LOCALCI)
 @RestController
-@RequestMapping("api/programming/")
+@RequestMapping("api/")
 public class BuildJobQueueResource {
 
     private static final Logger log = LoggerFactory.getLogger(BuildJobQueueResource.class);

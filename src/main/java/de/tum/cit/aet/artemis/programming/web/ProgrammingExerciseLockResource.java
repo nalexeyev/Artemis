@@ -15,7 +15,7 @@ import de.tum.cit.aet.artemis.core.service.messaging.InstanceMessageSendService;
 // only available for external version control services
 @Profile("!localvc & core")
 @RestController
-@RequestMapping("api/programming/")
+@RequestMapping("api/")
 public class ProgrammingExerciseLockResource {
 
     private static final Logger log = LoggerFactory.getLogger(ProgrammingExerciseLockResource.class);

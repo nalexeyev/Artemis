@@ -24,7 +24,7 @@ import de.tum.cit.aet.artemis.core.service.LegalDocumentService;
 @Profile(PROFILE_CORE)
 @EnforceAdmin
 @RestController
-@RequestMapping("api/core/admin/")
+@RequestMapping("api/admin/")
 public class AdminPrivacyStatementResource {
 
     private final LegalDocumentService legalDocumentService;

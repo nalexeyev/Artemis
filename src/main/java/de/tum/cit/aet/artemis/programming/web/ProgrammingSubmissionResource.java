@@ -62,7 +62,7 @@ import de.tum.cit.aet.artemis.programming.service.ci.ContinuousIntegrationServic
  */
 @Profile(PROFILE_CORE)
 @RestController
-@RequestMapping("api/programming/")
+@RequestMapping("api/")
 public class ProgrammingSubmissionResource {
 
     private static final Logger log = LoggerFactory.getLogger(ProgrammingSubmissionResource.class);

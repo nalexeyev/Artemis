@@ -38,7 +38,7 @@ import de.tum.cit.aet.artemis.core.util.HeaderUtil;
 @Profile(PROFILE_CORE)
 @EnforceAdmin
 @RestController
-@RequestMapping("api/core/admin/")
+@RequestMapping("api/admin/")
 public class AdminOrganizationResource {
 
     private static final Logger log = LoggerFactory.getLogger(AdminOrganizationResource.class);

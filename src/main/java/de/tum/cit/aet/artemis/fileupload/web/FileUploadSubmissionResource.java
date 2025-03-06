@@ -60,7 +60,7 @@ import de.tum.cit.aet.artemis.fileupload.service.FileUploadSubmissionService;
  */
 @Profile(PROFILE_CORE)
 @RestController
-@RequestMapping("api/fileupload/")
+@RequestMapping("api/")
 public class FileUploadSubmissionResource extends AbstractSubmissionResource {
 
     private static final String ENTITY_NAME = "fileUploadSubmission";

@@ -14,7 +14,7 @@ export class TextUnitService {
     private httpClient = inject(HttpClient);
     private lectureUnitService = inject(LectureUnitService);
 
-    private resourceURL = 'api/lecture';
+    private resourceURL = 'api';
 
     create(textUnit: TextUnit, lectureId: number): Observable<EntityResponseType> {
         return this.httpClient

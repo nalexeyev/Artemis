@@ -18,7 +18,8 @@ export type RepositoryExportOptions = {
 export class ProgrammingAssessmentRepoExportService {
     private http = inject(HttpClient);
 
-    public resourceUrl = 'api/programming/programming-exercises';
+    // TODO: We should move this endpoint to api/programming-exercises.
+    public resourceUrl = 'api/programming-exercises';
 
     /**
      * Exports repositories to the server by their participant identifiers

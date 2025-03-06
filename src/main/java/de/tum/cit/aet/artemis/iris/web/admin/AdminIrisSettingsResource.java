@@ -19,7 +19,7 @@ import de.tum.cit.aet.artemis.iris.service.settings.IrisSettingsService;
 @Profile(PROFILE_IRIS)
 @EnforceAdmin
 @RestController
-@RequestMapping("api/iris/admin/")
+@RequestMapping("api/admin/")
 public class AdminIrisSettingsResource {
 
     private final IrisSettingsService irisSettingsService;
@@ -29,12 +29,12 @@ public class AdminIrisSettingsResource {
     }
 
     /**
-     * PUT global-iris-settings: Update the global iris settings.
+     * PUT iris/global-iris-settings: Update the global iris settings.
      *
      * @param settings the settings to update
      * @return the {@link ResponseEntity} with status {@code 200 (Ok)} and with body the updated settings.
      */
-    @PutMapping("global-iris-settings")
+    @PutMapping("iris/global-iris-settings")
     public ResponseEntity<IrisSettings> updateGlobalSettings(@RequestBody IrisSettings settings) {
         var updatedSettings = irisSettingsService.saveIrisSettings(settings);
         return ResponseEntity.ok(updatedSettings);

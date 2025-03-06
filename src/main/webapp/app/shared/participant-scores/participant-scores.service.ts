@@ -14,7 +14,7 @@ export class ScoresDTO {
 export class ParticipantScoresService {
     private http = inject(HttpClient);
 
-    public resourceUrl = 'api/assessment';
+    public resourceUrl = 'api';
 
     findCourseScores(courseId: number): Observable<HttpResponse<ScoresDTO[]>> {
         return this.http.get<ScoresDTO[]>(`${this.resourceUrl}/courses/${courseId}/course-scores`, {

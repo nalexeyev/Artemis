@@ -18,7 +18,7 @@ import de.tum.cit.aet.artemis.core.security.annotations.enforceRoleInExercise.En
 
 @Profile(PROFILE_CORE)
 @RestController
-@RequestMapping("api/core/test/")
+@RequestMapping("api/test/")
 public class EnforceRoleInExerciseResource {
 
     @GetMapping("testEnforceAtLeastStudentInExerciseExplicit/{exerciseId}")

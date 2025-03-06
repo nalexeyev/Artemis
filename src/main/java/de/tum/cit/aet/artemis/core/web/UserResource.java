@@ -56,7 +56,7 @@ import tech.jhipster.web.util.PaginationUtil;
  */
 @Profile(PROFILE_CORE)
 @RestController
-@RequestMapping("api/core/")
+@RequestMapping("api/")
 public class UserResource {
 
     private static final Logger log = LoggerFactory.getLogger(UserResource.class);

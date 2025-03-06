@@ -11,7 +11,7 @@ type EntityResponseType = HttpResponse<TutorialGroupsConfiguration>;
 export class TutorialGroupsConfigurationService {
     private httpClient = inject(HttpClient);
 
-    private resourceURL = 'api/tutorialgroup';
+    private resourceURL = 'api';
 
     getOneOfCourse(courseId: number) {
         return this.httpClient

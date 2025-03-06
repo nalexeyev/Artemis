@@ -10,7 +10,7 @@ type EntityArrayResponseType = HttpResponse<ExerciseGroup[]>;
 export class ExerciseGroupService {
     private http = inject(HttpClient);
 
-    public resourceUrl = 'api/exam/courses';
+    public resourceUrl = 'api/courses';
 
     /**
      * Create an exercise group on the server using a POST request.

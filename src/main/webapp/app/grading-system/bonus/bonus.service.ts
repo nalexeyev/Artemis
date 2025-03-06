@@ -14,7 +14,7 @@ export class BonusService {
     private http = inject(HttpClient);
     private gradingSystemService = inject(GradingSystemService);
 
-    public resourceUrl = 'api/assessment';
+    public resourceUrl = 'api';
 
     /**
      * Deletes the bonus.
