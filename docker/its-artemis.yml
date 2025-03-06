@@ -1,0 +1,179 @@
+# ----------------------------------------------------------------------------------------------------------------------
+# Artemis bundle for ITS of NTUU "KPI"
+# ----------------------------------------------------------------------------------------------------------------------
+# To start the Artemis bundle, cd to Artemis root directory and run:
+# mkdir -p its-data/artemis-data its-data/artemis-mysql-data its-data/artemis-jenkins-data its-data/artemis-gitlab-data its-data/artemis-gitlab-logs its-data/artemis-gitlab-config #useful
+# docker-compose -f docker/its-artemis.yml up -d --build
+# To clean up the docker-compose network and volumes, run:
+# docker-compose -f docker/its-artemis.yml down -v --remove-orphans --rmi all && rm -rf ./its-data
+
+
+name: its-artemis
+
+services:
+    artemis:
+        container_name: artemis-app
+        image: ghcr.io/ls1intum/artemis
+        build:
+            context: ..
+            dockerfile: docker/artemis/Dockerfile
+            pull: true
+            target: runtime
+        volumes:
+            - artemis-data:/opt/artemis/data
+            - artemis-config:/opt/artemis/config
+        healthcheck:
+            test: wget -nv -t1 --spider http://localhost:8080/actuator/health || exit 1
+            start_period: 600s
+            interval: 1s
+        expose:
+            - "8080"
+            - "5701" # Hazelcast
+            - "7921" # Git SSH
+            - "5005"
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        ports:
+            - "8080:8080"
+            - "5005:5005" # Java Remote Debugging port declared in the java cmd options
+        env_file:
+            - ./artemis/config/dev.env
+        depends_on:
+            mysql:
+                condition: service_healthy
+        networks:
+            - artemis
+
+    mysql:
+        container_name: artemis-mysql
+        image: docker.io/library/mysql:8.0.32
+        pull_policy: always
+        volumes:
+            - artemis-mysql-data:/var/lib/mysql
+        environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+            MYSQL_ROOT_PASSWORD:
+            MYSQL_DATABASE: "Artemis"
+        ports:
+            - "127.0.0.1:3306:3306"
+        # expose the port to make it reachable docker internally even if the external port mapping changes
+        expose:
+            - "3306"
+        command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --collation-server=utf8mb4_unicode_ci --explicit_defaults_for_timestamp
+        # mbind: Operation not permitted workaround for docker compose (see https://github.com/docker-library/mysql/issues/303)
+        cap_add:
+            - SYS_NICE  # CAP_SYS_NICE
+        healthcheck:
+            test: mysqladmin ping -h 127.0.0.1 -u root --silent
+            interval: 5s
+            timeout: 3s
+            retries: 30
+            start_period: 300s
+        networks:
+            - artemis
+
+    gitlab:
+        container_name: artemis-gitlab
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        build: ./gitlab
+        volumes:
+            - artemis-gitlab-data:/var/opt/gitlab
+            - artemis-gitlab-logs:/var/log/gitlab
+            - artemis-gitlab-config:/etc/gitlab
+            - ./gitlab/gitlab-local-setup.sh:/gitlab-local-setup.sh
+        environment:
+            GITLAB_OMNIBUS_CONFIG: |
+                gitlab_rails['initial_root_password'] = 'longpassword'
+                gitlab_rails['gitlab_shell_ssh_port'] = 2222
+                gitlab_rails['monitoring_whitelist'] = ['0.0.0.0/0']
+                prometheus_monitoring['enable'] = false
+        ports:
+            - "2222:22"
+            - "8081:80"
+        # expose the ports to make them reachable docker internally even if the external port mapping changes
+        expose:
+            - "22"
+            - "80"
+        networks:
+            - artemis
+
+    jenkins:
+        container_name: artemis-jenkins
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        build:
+            context: ./jenkins
+            dockerfile: Dockerfile.its
+        user: root
+        volumes:
+            - artemis-jenkins-data:/var/jenkins_home
+            - ./jenkins/jenkins-disable-csrf.groovy:/var/jenkins_home/init.groovy # Disable CSRF token
+            - ./jenkins/master-key-only-for-testing.key:/var/jenkins_home/master.key # Preset master key to use pre-generated secrets
+            - ./jenkins/jenkins-casc-config-gitlab.yml:/usr/share/jenkins/ref/jenkins-casc-config.yml:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+        ports:
+            - "8082:8080"
+        # expose the port to make it reachable docker internally even if the external port mapping changes
+        expose:
+            - "8080"
+        networks:
+            - artemis
+        environment:
+            CASC_JENKINS_CONFIG: "/usr/share/jenkins/ref/jenkins-casc-config.yml"
+            JAVA_OPTS:
+
+networks:
+    artemis:
+        driver: "bridge"
+        name: artemis
+
+volumes:
+    artemis-config:
+      driver: local
+      driver_opts:
+        type: 'none'
+        o: 'bind'
+        device: '/home/artemis/Artemis/its-config'
+
+    artemis-data:
+      driver: local
+      driver_opts:
+        type: 'none'
+        o: 'bind'
+        device: '/home/artemis/Artemis/its-data/artemis-data'
+
+    artemis-mysql-data:
+      driver: local
+      driver_opts:
+        type: 'none'
+        o: 'bind'
+        device: '/home/artemis/Artemis/its-data/artemis-mysql-data'
+
+    artemis-jenkins-data:
+      driver: local
+      driver_opts:
+        type: 'none'
+        o: 'bind'
+        device: '/home/artemis/Artemis/its-data/artemis-jenkins-data'
+
+    artemis-gitlab-data:
+      driver: local
+      driver_opts:
+        type: 'none'
+        o: 'bind'
+        device: '/home/artemis/Artemis/its-data/artemis-gitlab-data'
+
+    artemis-gitlab-logs:
+      driver: local
+      driver_opts:
+        type: 'none'
+        o: 'bind'
+        device: '/home/artemis/Artemis/its-data/artemis-gitlab-logs'
+
+    artemis-gitlab-config:
+      driver: local
+      driver_opts:
+        type: 'none'
+        o: 'bind'
+        device: '/home/artemis/Artemis/its-data/artemis-gitlab-config'

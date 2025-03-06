@@ -1,0 +1,35 @@
+artemis:
+ course-archives-path: ./exports/courses
+ repo-clone-path: ./repos
+ repo-download-clone-path: ./repos-download
+ bcrypt-salt-rounds: 11  # The number of salt rounds for the bcrypt password hashing. Lower numbers make it faster but more unsecure and vice versa.
+                         # Please use the bcrypt benchmark tool to determine the best number of rounds for your system. https://github.com/ls1intum/bcrypt-Benchmark
+ user-management:
+     use-external: false
+     internal-admin:
+         username: artemis_admin
+         password: artemis_admin
+     accept-terms: false
+     login:
+         account-name: TUM
+ version-control:
+     url: http://localhost:8081
+     user: root
+     password: artemis_admin # created in Gitlab Server Quickstart step 2
+     token: artemis-gitlab-token # generated in Gitlab Server Quickstart steps 4 and 5
+ continuous-integration:
+     user: artemis_admin
+     password: artemis_admin
+     url: http://localhost:8082
+     vcs-credentials: artemis_gitlab_admin_credentials
+     artemis-authentication-token-key: artemis_notification_plugin_token
+     artemis-authentication-token-value: artemis_admin
+     build-timeout: 30
+ git:
+     name: Artemis
+     email: artemis@xcit.tum.de
+jenkins:
+    internal-urls:
+        ci-url: http://jenkins:8080
+        vcs-url: http://gitlab:80
+    use-crumb: false
