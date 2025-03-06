@@ -2,7 +2,7 @@
 # Artemis bundle for ITS of NTUU "KPI"
 # ----------------------------------------------------------------------------------------------------------------------
 # To start the Artemis bundle, cd to Artemis root directory and run:
-# mkdir -p its-data/artemis-data its-data/artemis-mysql-data its-data/artemis-jenkins-data its-data/artemis-gitlab-data its-data/artemis-gitlab-logs its-data/artemis-gitlab-config #useful
+# mkdir -p its-data/artemis-data its-data/artemis-mysql-data its-data/artemis-jenkins-data its-data/artemis-gitlab-data its-data/artemis-gitlab-logs its-data/artemis-gitlab-config
 # docker-compose -f docker/its-artemis.yml up -d --build
 # To clean up the docker-compose network and volumes, run:
 # docker-compose -f docker/its-artemis.yml down -v --remove-orphans --rmi all && rm -rf ./its-data
